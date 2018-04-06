@@ -5,7 +5,7 @@ class MarketScreen extends Component {
   render() {
     return (
       <View>
-        <Text> textInComponent </Text>
+        <Text> MarketScreen </Text>
       </View>
     );
   }
