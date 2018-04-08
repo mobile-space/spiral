@@ -7,11 +7,11 @@ import {
   Text,
 } from 'react-native';
 
-class MarketScreen extends Component {
+class TransactionsScreen extends Component {
   render() {
     return (
       <SafeAreaView style={styles.safeAreaView}>
-        <Text> Market Screen </Text>
+        <Text> Transactions Screen </Text>
       </SafeAreaView>
     );
   }
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MarketScreen;
+export default TransactionsScreen;
