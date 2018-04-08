@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Button,
   NativeModules,
   Platform,
   SafeAreaView,
@@ -9,8 +8,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Header } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
+
+import CategoryButton from './common/CategoryButton';
 
 class PosScreen extends Component {
   static propTypes = {
@@ -31,12 +32,19 @@ class PosScreen extends Component {
       <SafeAreaView styles={styles.safeAreaView}>
         <Header
           backgroundColor="rgba(0,0,0,0)"
-          leftComponent={{ icon: 'menu', color: '#000' }}
-          rightComponent={(
-            <Button
-              onPress={() => navigate('cart')}
-              title="Cart"
+          leftComponent={(
+            <Icon
+              name="menu"
               color="#000"
+              onPress={() => {}}
+            />
+          )}
+          rightComponent={(
+            <Icon
+              name="cart"
+              type="material-community"
+              color="#000"
+              onPress={() => navigate('cart')}
             />
           )}
         />
@@ -45,20 +53,21 @@ class PosScreen extends Component {
           <ScrollView
             style={{ flex: 1 }}
             horizontal
+            showsHorizontalScrollIndicator={false}
           >
-            <Button
+            <CategoryButton
               style={styles.category}
               onPress={() => this.setState({ items: 'Food' })}
               title="FOOD"
             />
-            <Button
+            <CategoryButton
               style={styles.category}
               onPress={() => this.setState({ items: 'Drink' })}
               title="DRINK"
             />
           </ScrollView>
 
-          <Button
+          <CategoryButton
             style={styles.plusButton}
             onPress={() => this.setState({ items: 'Editing mode' })}
             title="+"
