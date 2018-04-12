@@ -133,6 +133,9 @@ class PosScreen extends Component {
                   key={index}
                   size={cardDimensions.size}
                   spacing={cardDimensions.spacing}
+                  title='Hamburger'
+                  image='http://res.heraldm.com/content/image/2017/07/07/20170707000904_0.jpg'
+                  quantity={1}
                 />
               ))
             }
