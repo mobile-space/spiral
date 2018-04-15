@@ -87,7 +87,7 @@ class MarketScreen extends Component {
     const {isFetchingCoins, coins} = this.state
     
     return (
-    <ScrollView>
+    <ScrollView style={{flex:1}}>
       { !isFetchingCoins && 
         <FlatList
           keyExtractor = {(item, index) => index}

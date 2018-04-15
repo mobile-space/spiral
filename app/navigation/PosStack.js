@@ -9,6 +9,7 @@ export default StackNavigator({
   },
   cart: {
     screen: CartScreen,
+    navigationOptions: { tabBarVisible: false },
   },
 }, {
   mode: 'modal',
