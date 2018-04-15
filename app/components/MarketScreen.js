@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { 
+  NativeModules,
+  Platform,
+  SafeAreaView,
   View, 
   Text,  
   StyleSheet,
@@ -8,7 +11,6 @@ import {
 } from 'react-native';
 
 import { DIGITAL_MOCK_DATA } from '../utils/constant';
-
 
 class MarketScreen extends Component {
 
