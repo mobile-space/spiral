@@ -11,7 +11,7 @@ export default class componentName extends Component {
       isPaymentFinished: false,
       payment: null
     }
-    
+
   }
 
   componentDidMount = async () => {
@@ -41,7 +41,6 @@ export default class componentName extends Component {
       }
     }
   
-
   paymentStatusCallBack = () => {
     setInterval(function() {
       this.checkPaymentStatus();
@@ -64,7 +63,7 @@ export default class componentName extends Component {
         responseJSON = await response.json();
         console.log(responseJSON);
   
-        this.paymentStatusCallBack();
+        // this.paymentStatusCallBack();
         this.setState({
           isPaymentFinished: true,
           payment: responseJSON,
