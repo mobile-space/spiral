@@ -26,15 +26,11 @@ class MarketScreen extends Component {
     }
   }
 
-
   componentDidMount = async () => {
     this.fetchPrices();
   }
 
   fetchPrices = async () => {
-
-    const bitcoin = DIGITAL_MOCK_DATA[6].abr
-
     try {
       let response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH&tsyms=BTC,USD`, {
         method: 'GET',
@@ -47,8 +43,20 @@ class MarketScreen extends Component {
     
     if (response.status === 200) {
       responseJSON = await response.json();
+      var result = [];
+      var keys = Object.keys(responseJSON);
+
+      keys.forEach(function(key){
+
+        var coin = Object.assign({},responseJSON[key],{name: key}) 
+
+        result.push(coin);
+      });
+
+      console.log(result);
+
       this.setState({
-        coins: responseJSON,
+        coins: result,
         isFetchingCoins: false
       })
     } else {
@@ -57,15 +65,14 @@ class MarketScreen extends Component {
     } catch(error){
       console.log(error);
     }
-  }
+  } 
 
   _renderList = ({item: coin}) => {
-   console.log(coin)
     return(
-      <View style={styles.listContainer} key={coin}>
+      <View style={styles.listContainer}>
         <View style={styles.coinContainer} >
           <View style={styles.AbrCointaner} >
-            <Text style={{fontSize: 20}}> coin </Text>
+            <Text style={{fontSize: 20}}> {coin.name} </Text>
           </View>
           <View style={styles.nameCointaner} >
             {/* <Text style={{color: 'grey'}}> {coin.name} </Text> */}
@@ -76,7 +83,7 @@ class MarketScreen extends Component {
         </View>
         <View style={styles.priceCointainer}>
           <View style={styles.priceBox}>
-            <Text style={{fontSize: 18, color: 'white'}}> {coin.USD} </Text>
+            <Text style={{fontSize: 18, color: 'white'}}> ${coin.USD} </Text>
           </View>
         </View>
       </View>
@@ -90,7 +97,7 @@ class MarketScreen extends Component {
     <ScrollView>
       { !isFetchingCoins && 
         <FlatList
-          keyExtractor = {(item, index) => index}
+          keyExtractor = {(item, transaction) => transaction}
           data = {coins}
           renderItem = {({item}) => this._renderList({item})}
         />
