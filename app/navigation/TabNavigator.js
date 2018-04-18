@@ -9,6 +9,7 @@ import MarketScreen from '../components/MarketScreen';
 import TransactionsScreen from '../components/TransactionsScreen';
 import SettingsScreen from '../components/SettingsScreen';
 import PaymentScreen from '../components/PaymentScreen';
+import ConvertScreen from '../components/ConvertScreen';
 
 const PosScreenTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
@@ -83,6 +84,15 @@ export default TabNavigator({
       tabBarIcon: SettingsScreenTabIcon,
     },
   },
+
+  convert: {
+    screen: ConvertScreen,
+    navigationOptions: {
+      tabBarLabel: 'Convert',
+      tabBarIcon: SettingsScreenTabIcon,
+    },
+  },
+
 }, {
   initialRouteName: 'pos',
   tabBarPosition: 'bottom',

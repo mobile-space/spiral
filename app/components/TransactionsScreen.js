@@ -97,6 +97,12 @@ class TransactionsScreen extends Component {
               renderItem = {({item}) => this._renderTransaction({item})}
             />
           }
+
+
+
+
+
+
         </ScrollView>
       </SafeAreaView>
     );
