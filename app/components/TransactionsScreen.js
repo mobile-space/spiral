@@ -27,7 +27,7 @@ class TransactionsScreen extends Component {
 
   fetchTransactions = async () => {
     try {
-      let response = await fetch(`http://localhost:3000/transactions`, {
+      let response = await fetch(`https://crypto-payment-processor.herokuapp.com/transactions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'

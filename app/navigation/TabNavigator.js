@@ -8,6 +8,7 @@ import PosStack from './PosStack';
 import MarketScreen from '../components/MarketScreen';
 import TransactionsScreen from '../components/TransactionsScreen';
 import SettingsScreen from '../components/SettingsScreen';
+import PaymentScreen from '../components/PaymentScreen';
 
 const PosScreenTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
@@ -76,7 +77,7 @@ export default TabNavigator({
     },
   },
   settings: {
-    screen: SettingsScreen,
+    screen: PaymentScreen,
     navigationOptions: {
       tabBarLabel: 'Settings',
       tabBarIcon: SettingsScreenTabIcon,
