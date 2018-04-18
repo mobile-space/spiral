@@ -26,15 +26,11 @@ class MarketScreen extends Component {
     }
   }
 
-
   componentDidMount = async () => {
     this.fetchPrices();
   }
 
   fetchPrices = async () => {
-
-    const bitcoin = DIGITAL_MOCK_DATA[6].abr
-
     try {
       let response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH&tsyms=BTC,USD`, {
         method: 'GET',
@@ -72,9 +68,6 @@ class MarketScreen extends Component {
   } 
 
   _renderList = ({item: coin}) => {
-
-    console.log(coin.name);
-
     return(
       <View style={styles.listContainer}>
         <View style={styles.coinContainer} >
@@ -104,7 +97,7 @@ class MarketScreen extends Component {
     <ScrollView>
       { !isFetchingCoins && 
         <FlatList
-          keyExtractor = {(item, index) => index}
+          keyExtractor = {(item, transaction) => transaction}
           data = {coins}
           renderItem = {({item}) => this._renderList({item})}
         />
