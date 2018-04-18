@@ -8,18 +8,50 @@ export default class componentName extends Component {
     super(props)
 
     this.state = {
-      isTransactionFinishedFetching: false
+      isPaymentFinished: false,
+      payment: null
     }
+    
   }
 
   componentDidMount = async () => {
     this.createTransaction();
   }
 
+  checkPaymentStatus = async () => {
+
+      console.log("TEST");
+      try {
+        let response = await fetch(`https://crypto-payment-processor.herokuapp.com/payment/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+        });
+        var responseJSON = null; 
+  
+        if (response.status === 200) {
+          responseJSON = await response.json();
+          console.log(responseJSON);
+        } else {
+          console.log(response.status);
+        }
+      } catch(error){
+        console.log(error);
+      }
+    }
+  
+
+  paymentStatusCallBack = () => {
+    setInterval(function() {
+      this.checkPaymentStatus();
+    }, 600);
+  }
+
   createTransaction = async () => {
 
     try {
-      let response = await fetch(`http://localhost:3000/payment`, {
+      let response = await fetch(`https://crypto-payment-processor.herokuapp.com/payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -27,14 +59,15 @@ export default class componentName extends Component {
       });
 
     var responseJSON = null; 
-    
+
       if (response.status === 200) {
         responseJSON = await response.json();
-        const transactions = this.filterTransactions(responseJSON);
-
+        console.log(responseJSON);
+  
+        this.paymentStatusCallBack();
         this.setState({
-          isFinishedLoadingTransactions: true,
-          transactions: transactions,
+          isPaymentFinished: true,
+          payment: responseJSON,
         })
 
       } else {
@@ -44,6 +77,7 @@ export default class componentName extends Component {
       console.log(error);
     }
   }
+
   //copy address to clipboard
   _setContent = () => {
     Clipboard.setString();
@@ -51,7 +85,6 @@ export default class componentName extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.safeAreaView}>
       <LinearGradient
           style={{flex: 1}}
           colors={['#11998e','#38ef7d']}
@@ -59,10 +92,11 @@ export default class componentName extends Component {
           end={{x:1.0, y: 1.0}}
           locations={[0.1, 0.8]}
       >
+        <SafeAreaView style={styles.safeAreaView}>
 
+        </SafeAreaView>
       </LinearGradient>
 
-      </SafeAreaView>
     );
   }
 }
