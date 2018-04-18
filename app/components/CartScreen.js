@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
+import CartItem from './common/CartItem';
 
 class CartScreen extends Component {
-  renderCartItem = () => {
-    
-  }
+  renderCartItem = () => (
+    <CartItem />
+  );
 
   render() {
     const { navigation: { goBack } } = this.props;
@@ -85,8 +86,8 @@ const styles = StyleSheet.create({
     height: 24,
     marginBottom: 16,
     marginTop: 16,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   totalText: {
     flex: 1,
