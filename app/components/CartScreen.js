@@ -1,29 +1,40 @@
 import React, { Component } from 'react';
 import {
   FlatList,
-  NativeModules,
   TouchableOpacity,
-  Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
+import { connect } from 'react-redux';
+
 import CartItem from './common/CartItem';
 
 class CartScreen extends Component {
-  renderCartItem = () => (
-    <CartItem />
-  );
+  renderCartItem = (product) => {
+    const { addOneToCart, removeOneFromCart } = this.props;
+
+    return (
+      <CartItem
+        product={product}
+        onMinusPressed={() => removeOneFromCart(product)}
+        onPlusPressed={() => addOneToCart(product)}
+      />
+    );
+  };
 
   render() {
-    const { navigation: { goBack } } = this.props;
+    const { navigation: { goBack }, cart } = this.props;
     
     return (
-      <SafeAreaView style={styles.safeAreaView}>
+      <View style={{ flex: 1 }}>
         <Header
+          outerContainerStyles={{
+            marginTop: 24,
+            marginBottom: 24,
+          }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
             <TouchableOpacity onPress={() => goBack()}>
@@ -45,14 +56,26 @@ class CartScreen extends Component {
         />
 
         <FlatList
-          keyExtractor={(item, index) => index}
-          data={[1, 2, 3]}
-          renderItem={this.renderCartItem}
+          keyExtractor={product => `${product.productId}`}
+          data={Object.keys(cart).map(key => cart[key])}
+          renderItem={({ item }) => this.renderCartItem(item)}
         />
 
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>Total: </Text>
-          <Text style={styles.totalAmount}>6.73</Text>
+          <Text style={styles.totalAmount}>
+            {
+              Object.keys(cart).reduce((accumulator, key) => {
+                const {
+                  quantity,
+                  price: { local_currency: unitPrice },
+                } = cart[key];
+
+                const total = accumulator + (quantity * unitPrice);
+                return +(`${Math.round(`${total}e+2`)}e-2`);
+              }, 0)
+            }
+          </Text>
           <Text style={styles.totalCurrency}>BTC</Text>
         </View>
 
@@ -61,7 +84,7 @@ class CartScreen extends Component {
             <Text style={styles.checkoutButtonText}>CHECKOUT</Text>
           </View>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -70,13 +93,12 @@ CartScreen.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
   }).isRequired,
+  cart: PropTypes.shape({}).isRequired,
+  addOneToCart: PropTypes.func.isRequired,
+  removeOneFromCart: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
-  },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -109,6 +131,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     height: 60,
     margin: 8,
+    marginBottom: 32,
   },
   checkoutButton: {
     alignItems: 'center',
@@ -122,4 +145,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CartScreen;
+export default (() => {
+  const mapStateToProps = state => ({
+    cart: state.cart,
+  });
+
+  /* eslint-disable global-require  */
+  const {
+    addOneToCart,
+    removeOneFromCart,
+  } = require('../actions/cart_actions');
+  /* eslint-enable global-require  */
+
+  const mapDispatchToProps = {
+    addOneToCart,
+    removeOneFromCart,
+  };
+
+  return connect(mapStateToProps, mapDispatchToProps)(CartScreen);
+})();
+

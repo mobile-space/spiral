@@ -1,53 +1,17 @@
 import React, { Component } from 'react';
 import {
-  Dimensions,
-  FlatList,
-  NativeModules,
-  Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
+import { connect } from 'react-redux';
 
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
-
-const MIN_ROW_COUNT = 2;
-const MAX_ROW_COUNT = 5;
-const DEFAULT_ITEM_SIZE = 180;
-
-const screen = Dimensions.get('window');
-const width = Math.min(screen.height, screen.width);
-
-const cardDimensions = (() => {
-  const itemSpace = Math.max(16, 0.04 * width);
-  
-  /* eslint-disable no-mixed-operators  */
-  if (width < MIN_ROW_COUNT * DEFAULT_ITEM_SIZE + MIN_ROW_COUNT * itemSpace) {
-    return {
-      size: (width - MIN_ROW_COUNT * itemSpace) / MIN_ROW_COUNT,
-      spacing: itemSpace,
-    };
-  } else if (width < MAX_ROW_COUNT * DEFAULT_ITEM_SIZE + MAX_ROW_COUNT * itemSpace) {
-    return {
-      size: (width - MAX_ROW_COUNT * itemSpace) / MAX_ROW_COUNT,
-      spacing: itemSpace,
-    };
-  }
-
-  // Derive from: DEFAULT_ITEM_SIZE * count + itemSpace * count = width
-  const count = Math.floor((width - itemSpace) / (DEFAULT_ITEM_SIZE + itemSpace));
-  const expandedSpace = (width - DEFAULT_ITEM_SIZE * count) / count;
-  return {
-    size: DEFAULT_ITEM_SIZE,
-    spacing: expandedSpace,
-  };
-  /* eslint-enable no-mixed-operators  */
-})();
+import cardDimensions from '../utils/dimensions';
+// import fakeData from '../utils/fake_data';
 
 class PosScreen extends Component {
   static propTypes = {
@@ -55,31 +19,66 @@ class PosScreen extends Component {
       navigate: PropTypes.func.isRequired,
     }).isRequired,
   };
-
-  state = {
-    items: 'Food',
-  };
   
   static navigationOptions = {
     drawUnderTabBar: false,
   };
 
-  renderItemCard() {
-    return (
-      <ItemCard
-        size={cardDimensions.size}
-        spacing={cardDimensions.spacing}
-      />
-    );
+  constructor(props) {
+    super(props);
+
+    const { products, cart } = this.props;
+    
+    const categories =
+      Array.from(new Set(Object.keys(products).map(key => products[key].category)));
+
+    this.state = {
+      products,
+      cart,
+      categories,
+      selectedCategory: categories.length > 0 ? categories[0] : null,
+    };
   }
 
-  render() {
-    const { items } = this.state;
-    const { navigation: { navigate } } = this.props;
+  // componentWillMount() {
+  //   fakeData.forEach((product) => {
+  //     this.props.addProduct(product);
+  //   });
+  // }
 
+  componentWillReceiveProps(nextProps) {
+    const { products, cart } = nextProps;
+    this.setState({
+      products,
+      cart,
+      categories: Array.from(new Set(Object.keys(products).map(key => products[key].category))),
+    });
+  }
+
+  renderItemCard = () => (
+    <ItemCard
+      size={cardDimensions.size}
+      spacing={cardDimensions.spacing}
+    />
+  )
+
+  render() {
+    const {
+      products, cart, categories, selectedCategory,
+    } = this.state;
+    const {
+      navigation: { navigate },
+      addOneToCart,
+      removeOneFromCart,
+    } = this.props;
+    
     return (
-      <SafeAreaView styles={styles.safeAreaView}>
+      <View style={{ flex: 1 }}>
         <Header
+          outerContainerStyles={{
+            marginTop: 24,
+            marginBottom: 24,
+          }}
           backgroundColor="rgba(0,0,0,0)"
           leftComponent={(
             <Icon
@@ -104,55 +103,62 @@ class PosScreen extends Component {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            <CategoryButton
-              style={styles.category}
-              onPress={() => this.setState({ items: 'Food' })}
-              title="FOOD"
-            />
-            <CategoryButton
-              style={styles.category}
-              onPress={() => this.setState({ items: 'Drink' })}
-              title="DRINK"
-            />
+            {
+              categories.map(category => (
+                <CategoryButton
+                  key={category}
+                  style={styles.category}
+                  onPress={() => this.setState({ selectedCategory: category })}
+                  title={category}
+                />
+              ))
+            }
           </ScrollView>
 
           <CategoryButton
             style={styles.plusButton}
-            onPress={() => this.setState({ items: 'Editing mode' })}
+            onPress={() => navigate('newProduct')}
             title="+"
           />
         </View>
 
-        <ScrollView
-          style={{ flexDirection: 'column', marginBottom: 120 }}
-        >
+        <ScrollView>
           <View style={styles.itemList}>
             {
-              [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
-                <ItemCard
-                  key={index}
-                  size={cardDimensions.size}
-                  spacing={cardDimensions.spacing}
-                  title='Hamburger'
-                  image='http://res.heraldm.com/content/image/2017/07/07/20170707000904_0.jpg'
-                  quantity={1}
-                />
-              ))
+              Object.keys(products).reduce((accumulator, key) => {
+                if (products[key].category === selectedCategory) {
+                  /* eslint-disable function-paren-newline  */
+                  return accumulator.concat(
+                    <ItemCard
+                      key={products[key].productId}
+                      size={cardDimensions.size}
+                      spacing={cardDimensions.spacing}
+                      product={products[key]}
+                      quantity={(cart[key] && cart[key].quantity) || 0}
+                      onMinusPressed={() => removeOneFromCart(products[key])}
+                      onPlusPressed={() => addOneToCart(products[key])}
+                    />,
+                  );
+                  /* eslint-enable function-paren-newline  */
+                }
+                return accumulator;
+              }, [])
             }
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 }
 
+PosScreen.propTypes = {
+  products: PropTypes.PropTypes.shape({}).isRequired,
+  cart: PropTypes.PropTypes.shape({}).isRequired,
+  addOneToCart: PropTypes.func.isRequired,
+  removeOneFromCart: PropTypes.func.isRequired,
+};
+
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
-    backgroundColor: '#FFF',
-  },
   categoryRow: {
     height: 40,
     flexDirection: 'row',
@@ -175,4 +181,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PosScreen;
+export default (() => {
+  const mapStateToProps = state => ({
+    products: state.products,
+    cart: state.cart,
+  });
+
+  /* eslint-disable global-require  */
+  const { addProduct } = require('../actions/products_actions');
+  const {
+    addOneToCart,
+    removeOneFromCart,
+  } = require('../actions/cart_actions');
+  /* eslint-enable global-require  */
+
+  const mapDispatchToProps = {
+    addProduct,
+    addOneToCart,
+    removeOneFromCart,
+  };
+
+  return connect(mapStateToProps, mapDispatchToProps)(PosScreen);
+})();
+
