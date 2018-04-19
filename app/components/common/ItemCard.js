@@ -17,6 +17,11 @@ class ItemCard extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { quantity } = nextProps;
+    this.setState({ quantity });
+  }
+
   render() {
     const {
       size, spacing, product, onMinusPressed, onPlusPressed,
