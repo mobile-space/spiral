@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { PropTypes } from 'prop-types';
 
 class CartItem extends Component {
   constructor(props) {
@@ -78,6 +79,16 @@ class CartItem extends Component {
     );
   }
 }
+
+CartItem.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    quantity: PropTypes.number.isRequired,
+  }).isRequired,
+  onMinusPressed: PropTypes.func.isRequired,
+  onPlusPressed: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {

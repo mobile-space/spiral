@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
 import cardDimensions from '../utils/dimensions';
-import fakeData from '../store/fake_data';
+// import fakeData from '../utils/fake_data';
 
 class PosScreen extends Component {
   static propTypes = {
@@ -150,6 +150,13 @@ class PosScreen extends Component {
     );
   }
 }
+
+PosScreen.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  cart: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  addOneToCart: PropTypes.func.isRequired,
+  removeOneFromCart: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   categoryRow: {

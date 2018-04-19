@@ -93,6 +93,9 @@ CartScreen.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
   }).isRequired,
+  cart: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  addOneToCart: PropTypes.func.isRequired,
+  removeOneFromCart: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

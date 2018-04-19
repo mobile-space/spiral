@@ -84,7 +84,6 @@ export default TabNavigator({
       tabBarIcon: SettingsScreenTabIcon,
     },
   },
-
   convert: {
     screen: ConvertScreen,
     navigationOptions: {

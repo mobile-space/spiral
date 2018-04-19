@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,6 +11,7 @@ import {
   ListItem,
 } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
 
 class NewProductScreen extends Component {
   constructor(props) {
@@ -65,10 +65,7 @@ class NewProductScreen extends Component {
     const {
       name, categories, categoryIndex, newCategory, image, price,
     } = this.state;
-    const {
-      navigation: { goBack },
-      addProduct,
-    } = this.props;
+    const { navigation: { goBack } } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
@@ -156,9 +153,13 @@ class NewProductScreen extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  
-});
+NewProductScreen.propTypes = {
+  products: PropTypes.araryOf(PropTypes.shape({})).isRequired,
+  navigation: PropTypes.shape({
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+  addProduct: PropTypes.func.isRequired,
+};
 
 export default (() => {
   const mapStateToProps = state => ({
