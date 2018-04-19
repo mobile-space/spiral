@@ -63,7 +63,18 @@ class CartScreen extends Component {
 
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>Total: </Text>
-          <Text style={styles.totalAmount}>6.73</Text>
+          <Text style={styles.totalAmount}>
+            {
+              Object.keys(cart).reduce((accumulator, key) => {
+                const {
+                  quantity,
+                  price: { local_currency: unitPrice },
+                } = cart[key];
+                
+                return accumulator + (quantity * unitPrice);
+              }, 0)
+            }
+          </Text>
           <Text style={styles.totalCurrency}>BTC</Text>
         </View>
 
