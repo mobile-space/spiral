@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import {
   Dimensions,
-  FlatList,
   NativeModules,
   Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
+import { connect } from 'react-redux';
 
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
@@ -55,26 +54,43 @@ class PosScreen extends Component {
       navigate: PropTypes.func.isRequired,
     }).isRequired,
   };
-
-  state = {
-    items: 'Food',
-  };
   
   static navigationOptions = {
     drawUnderTabBar: false,
   };
 
-  renderItemCard() {
-    return (
-      <ItemCard
-        size={cardDimensions.size}
-        spacing={cardDimensions.spacing}
-      />
-    );
+  constructor(props) {
+    super(props);
+
+    const { products, cart } = this.props;
+    
+    const categories =
+      Array.from(new Set(Object.keys(products).map(key => products[key].category)));
+
+    this.state = {
+      products: Object.assign(products, cart),
+      categories,
+      selectedCategory: categories.length > 0 ? categories[0] : null,
+    };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { products, cart } = nextProps;
+    this.setState({
+      products: Object.assign(products, cart),
+      categories: Array.from(new Set(Object.keys(products).map(key => products[key].category))),
+    });
+  }
+
+  renderItemCard = () => (
+    <ItemCard
+      size={cardDimensions.size}
+      spacing={cardDimensions.spacing}
+    />
+  )
+
   render() {
-    const { items } = this.state;
+    const { products, categories, selectedCategory } = this.state;
     const { navigation: { navigate } } = this.props;
 
     return (
@@ -104,21 +120,21 @@ class PosScreen extends Component {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            <CategoryButton
-              style={styles.category}
-              onPress={() => this.setState({ items: 'Food' })}
-              title="FOOD"
-            />
-            <CategoryButton
-              style={styles.category}
-              onPress={() => this.setState({ items: 'Drink' })}
-              title="DRINK"
-            />
+            {
+              categories.map(category => (
+                <CategoryButton
+                  key={category}
+                  style={styles.category}
+                  onPress={() => this.setState({ selectedCategory: category })}
+                  title={category}
+                />
+              ))
+            }
           </ScrollView>
 
           <CategoryButton
             style={styles.plusButton}
-            onPress={() => this.setState({ items: 'Editing mode' })}
+            onPress={() => {}}
             title="+"
           />
         </View>
@@ -128,16 +144,23 @@ class PosScreen extends Component {
         >
           <View style={styles.itemList}>
             {
-              [1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
-                <ItemCard
-                  key={index}
-                  size={cardDimensions.size}
-                  spacing={cardDimensions.spacing}
-                  title='Hamburger'
-                  image='http://res.heraldm.com/content/image/2017/07/07/20170707000904_0.jpg'
-                  quantity={1}
-                />
-              ))
+              Object.keys(products).reduce((accumulator, key) => {
+                if (products[key].category === selectedCategory) {
+                  /* eslint-disable function-paren-newline  */
+                  return accumulator.concat(
+                    <ItemCard
+                      key={products[key].productId}
+                      size={cardDimensions.size}
+                      spacing={cardDimensions.spacing}
+                      title={products[key].name}
+                      image={products[key].image}
+                      quantity={products[key].quantity || 0}
+                    />,
+                  );
+                  /* eslint-enable function-paren-newline  */
+                }
+                return accumulator;
+              }, [])
             }
           </View>
         </ScrollView>
@@ -175,4 +198,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PosScreen;
+export default (() => {
+  const mapStateToProps = state => ({
+    products: state.products,
+    cart: state.cart,
+  });
+
+  /* eslint-disable global-require  */
+  const { addProduct } = require('../actions/products_actions');
+  /* eslint-enable global-require  */
+
+  const mapDispatchToProps = {
+    addProduct,
+  };
+
+  return connect(mapStateToProps, mapDispatchToProps)(PosScreen);
+})();
+
