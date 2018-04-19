@@ -13,9 +13,17 @@ import { connect } from 'react-redux';
 import CartItem from './common/CartItem';
 
 class CartScreen extends Component {
-  renderCartItem = product => (
-    <CartItem product={product} />
-  );
+  renderCartItem = (product) => {
+    const { addOneToCart, removeOneFromCart } = this.props;
+
+    return (
+      <CartItem
+        product={product}
+        onMinusPressed={() => removeOneFromCart(product)}
+        onPlusPressed={() => addOneToCart()}
+      />
+    );
+  };
 
   render() {
     const { navigation: { goBack }, cart } = this.props;
@@ -128,11 +136,15 @@ export default (() => {
   });
 
   /* eslint-disable global-require  */
-  // const {  } = require('');
+  const {
+    addOneToCart,
+    removeOneFromCart,
+  } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
-    
+    addOneToCart,
+    removeOneFromCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);

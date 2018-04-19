@@ -67,7 +67,7 @@ class PosScreen extends Component {
     const {
       navigation: { navigate },
       addOneToCart,
-      removeOneToCart,
+      removeOneFromCart,
     } = this.props;
     
     return (
@@ -133,8 +133,8 @@ class PosScreen extends Component {
                       spacing={cardDimensions.spacing}
                       product={products[key]}
                       quantity={(cart[key] && cart[key].quantity) || 0}
-                      onMinusPressed={removeOneToCart}
-                      onPlusPressed={addOneToCart}
+                      onMinusPressed={() => removeOneFromCart(products[key])}
+                      onPlusPressed={() => addOneToCart(products[key])}
                     />,
                   );
                   /* eslint-enable function-paren-newline  */
@@ -182,14 +182,14 @@ export default (() => {
   const { addProduct } = require('../actions/products_actions');
   const {
     addOneToCart,
-    removeOneToCart,
+    removeOneFromCart,
   } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
     addProduct,
     addOneToCart,
-    removeOneToCart,
+    removeOneFromCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(PosScreen);

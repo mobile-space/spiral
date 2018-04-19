@@ -49,7 +49,7 @@ class ItemCard extends Component {
             onPress={() => {
               if (quantity >= 1) {
                 this.setState({ quantity: quantity - 1 });
-                onMinusPressed(product);
+                onMinusPressed();
               }
             }}
           />
@@ -62,7 +62,7 @@ class ItemCard extends Component {
             type="material-community"
             onPress={() => {
               this.setState({ quantity: quantity + 1 });
-              onPlusPressed(product);
+              onPlusPressed();
             }}
           />
         </View>

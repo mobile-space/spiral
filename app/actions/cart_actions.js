@@ -8,7 +8,7 @@ export const addOneToCart = product => ({
   payload: product,
 });
 
-export const removeOneToCart = product => ({
+export const removeOneFromCart = product => ({
   type: REMOVE_ONE_FROM_CART,
   payload: product,
 });
