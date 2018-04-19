@@ -20,7 +20,7 @@ class CartScreen extends Component {
       <CartItem
         product={product}
         onMinusPressed={() => removeOneFromCart(product)}
-        onPlusPressed={() => addOneToCart()}
+        onPlusPressed={() => addOneToCart(product)}
       />
     );
   };
