@@ -63,7 +63,9 @@ class PosScreen extends Component {
   )
 
   render() {
-    const { products, cart, categories, selectedCategory } = this.state;
+    const {
+      products, cart, categories, selectedCategory,
+    } = this.state;
     const {
       navigation: { navigate },
       addOneToCart,
@@ -115,7 +117,7 @@ class PosScreen extends Component {
 
           <CategoryButton
             style={styles.plusButton}
-            onPress={() => {}}
+            onPress={() => navigate('newProduct')}
             title="+"
           />
         </View>
