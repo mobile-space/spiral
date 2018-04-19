@@ -7,49 +7,57 @@ import {
   View,
 } from 'react-native';
 
-const CartItem = () => (
-  <View style={styles.container}>
-    <View style={styles.row}>
-      <View style={styles.productContainer}>
-        <View style={styles.product}>
-          <View style={{ marginRight: 8 }}>
-            <Image
-              style={styles.productImage}
-              source={{ uri: 'http://res.heraldm.com/content/image/2017/07/07/20170707000904_0.jpg' }}
-            />
+const CartItem = (props) => {
+  const {
+    product: {
+      name, image, quantity,
+    },
+  } = props;
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.row}>
+        <View style={styles.productContainer}>
+          <View style={styles.product}>
+            <View style={{ marginRight: 8 }}>
+              <Image
+                style={styles.productImage}
+                source={{ uri: image }}
+              />
+            </View>
+
+            <View style={styles.productInfo}>
+              <Text style={styles.productName}>{name}</Text>
+            </View>
           </View>
 
-          <View style={styles.productInfo}>
-            <Text style={styles.productName}>Hamburger</Text>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+            >
+              <Text>+</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.quantity}>{quantity}</Text>
+
+            <TouchableOpacity
+              style={styles.quantityButton}
+            >
+              <Text>-</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity
-            style={styles.quantityButton}
-          >
-            <Text>+</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.quantity}>1</Text>
-
-          <TouchableOpacity
-            style={styles.quantityButton}
-          >
-            <Text>-</Text>
-          </TouchableOpacity>
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceAmount}>1.25</Text>
+          <Text style={styles.priceCurrency}>BTC</Text>
         </View>
       </View>
 
-      <View style={styles.priceContainer}>
-        <Text style={styles.priceAmount}>1.25</Text>
-        <Text style={styles.priceCurrency}>BTC</Text>
-      </View>
+      <View style={styles.border} />
     </View>
-
-    <View style={styles.border} />
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

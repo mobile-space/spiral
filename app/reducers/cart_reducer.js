@@ -35,10 +35,9 @@ export default (state = INITIAL_STATE, action) => {
       if (state[productId]) {
         if (state[productId].quantity === 1) {
           // Remove last item to cart
-          return {
-            ...state,
-            [productId]: undefined,
-          };
+          const clone = Object.assign({}, state);
+          delete clone[productId];
+          return clone;
         }
 
         // Decrease quantity by 1
@@ -75,10 +74,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case REMOVE_FROM_CART: {
       const { productId } = action.payload;
-      return {
-        ...state,
-        [productId]: undefined,
-      };
+      
+      const clone = Object.assign({}, state);
+      delete clone[productId];
+      return clone;
     }
 
     default:

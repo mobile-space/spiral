@@ -73,6 +73,10 @@ class PosScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Header
+          outerContainerStyles={{
+            marginTop: 24,
+            marginBottom: 24,
+          }}
           backgroundColor="rgba(0,0,0,0)"
           leftComponent={(
             <Icon
