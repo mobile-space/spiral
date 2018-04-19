@@ -25,7 +25,7 @@ export default (state = INITIAL_STATE, action) => {
       // New item to cart
       return {
         ...state,
-        [productId]: Object.assign(action.payload, { quntity: 1 }),
+        [productId]: Object.assign(action.payload, { quantity: 1 }),
       };
     }
 

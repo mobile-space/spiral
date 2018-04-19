@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Dimensions,
-  NativeModules,
-  Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
@@ -14,39 +10,8 @@ import { connect } from 'react-redux';
 
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
-
-const MIN_ROW_COUNT = 2;
-const MAX_ROW_COUNT = 5;
-const DEFAULT_ITEM_SIZE = 180;
-
-const screen = Dimensions.get('window');
-const width = Math.min(screen.height, screen.width);
-
-const cardDimensions = (() => {
-  const itemSpace = Math.max(16, 0.04 * width);
-  
-  /* eslint-disable no-mixed-operators  */
-  if (width < MIN_ROW_COUNT * DEFAULT_ITEM_SIZE + MIN_ROW_COUNT * itemSpace) {
-    return {
-      size: (width - MIN_ROW_COUNT * itemSpace) / MIN_ROW_COUNT,
-      spacing: itemSpace,
-    };
-  } else if (width < MAX_ROW_COUNT * DEFAULT_ITEM_SIZE + MAX_ROW_COUNT * itemSpace) {
-    return {
-      size: (width - MAX_ROW_COUNT * itemSpace) / MAX_ROW_COUNT,
-      spacing: itemSpace,
-    };
-  }
-
-  // Derive from: DEFAULT_ITEM_SIZE * count + itemSpace * count = width
-  const count = Math.floor((width - itemSpace) / (DEFAULT_ITEM_SIZE + itemSpace));
-  const expandedSpace = (width - DEFAULT_ITEM_SIZE * count) / count;
-  return {
-    size: DEFAULT_ITEM_SIZE,
-    spacing: expandedSpace,
-  };
-  /* eslint-enable no-mixed-operators  */
-})();
+import cardDimensions from '../utils/dimensions';
+import fakeData from '../store/fake_data';
 
 class PosScreen extends Component {
   static propTypes = {
@@ -68,16 +33,24 @@ class PosScreen extends Component {
       Array.from(new Set(Object.keys(products).map(key => products[key].category)));
 
     this.state = {
-      products: Object.assign(products, cart),
+      products,
+      cart,
       categories,
       selectedCategory: categories.length > 0 ? categories[0] : null,
     };
   }
 
+  // componentWillMount() {
+  //   fakeData.forEach((product) => {
+  //     this.props.addProduct(product);
+  //   });
+  // }
+
   componentWillReceiveProps(nextProps) {
     const { products, cart } = nextProps;
     this.setState({
-      products: Object.assign(products, cart),
+      products,
+      cart,
       categories: Array.from(new Set(Object.keys(products).map(key => products[key].category))),
     });
   }
@@ -90,9 +63,13 @@ class PosScreen extends Component {
   )
 
   render() {
-    const { products, categories, selectedCategory } = this.state;
-    const { navigation: { navigate } } = this.props;
-
+    const { products, cart, categories, selectedCategory } = this.state;
+    const {
+      navigation: { navigate },
+      addOneToCart,
+      removeOneToCart,
+    } = this.props;
+    
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -150,9 +127,10 @@ class PosScreen extends Component {
                       key={products[key].productId}
                       size={cardDimensions.size}
                       spacing={cardDimensions.spacing}
-                      title={products[key].name}
-                      image={products[key].image}
-                      quantity={products[key].quantity || 0}
+                      product={products[key]}
+                      quantity={(cart[key] && cart[key].quantity) || 0}
+                      onMinusPressed={removeOneToCart}
+                      onPlusPressed={addOneToCart}
                     />,
                   );
                   /* eslint-enable function-paren-newline  */
@@ -198,10 +176,16 @@ export default (() => {
 
   /* eslint-disable global-require  */
   const { addProduct } = require('../actions/products_actions');
+  const {
+    addOneToCart,
+    removeOneToCart,
+  } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
     addProduct,
+    addOneToCart,
+    removeOneToCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(PosScreen);

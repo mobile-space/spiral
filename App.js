@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Provider, connect } from 'react-redux';
 import {
@@ -11,24 +11,12 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import reducers from './app/reducers';
 import TabNavigator from './app/navigation/TabNavigator';
-import fakeData from './app/store/fake_data';
 
 export const ConnectedRootComponent = (() => {
-  class RootComponent extends Component {
-    componentDidMount() {
-      // const { addProduct } = this.props;
-      // fakeData.forEach((product) => {
-      //   addProduct(product);
-      // });
-    }
-  
-    render() {
-      return (
-        <TabNavigator />
-      );
-    }
-  }
-  
+  const RootComponent = () => (
+    <TabNavigator />
+  );
+
   const mapStateToProps = state => ({
     products: state.products,
   });
@@ -58,6 +46,9 @@ const App = () => {
     applyMiddleware(thunk),
   );
   const persistor = persistStore(store);
+
+  // Clear Data
+  // persistor.purge();
 
   return (
     <Provider store={store}>
