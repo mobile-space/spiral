@@ -38,6 +38,9 @@ class TransactionsScreen extends Component {
     
     if (response.status === 200) {
       responseJSON = await response.json();
+
+      console.log(responseJSON)
+
       const transactions = this.filterTransactions(responseJSON);
 
       this.setState({
@@ -89,7 +92,6 @@ class TransactionsScreen extends Component {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView>
-
           { isFinishedLoadingTransactions &&
             <FlatList
               keyExtractor = {(item, index) => index}
@@ -97,12 +99,6 @@ class TransactionsScreen extends Component {
               renderItem = {({item}) => this._renderTransaction({item})}
             />
           }
-
-
-
-
-
-
         </ScrollView>
       </SafeAreaView>
     );
