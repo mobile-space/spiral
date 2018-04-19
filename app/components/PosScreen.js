@@ -94,7 +94,7 @@ class PosScreen extends Component {
     const { navigation: { navigate } } = this.props;
 
     return (
-      <SafeAreaView styles={styles.safeAreaView}>
+      <View style={{ flex: 1 }}>
         <Header
           backgroundColor="rgba(0,0,0,0)"
           leftComponent={(
@@ -139,9 +139,7 @@ class PosScreen extends Component {
           />
         </View>
 
-        <ScrollView
-          style={{ flexDirection: 'column', marginBottom: 120 }}
-        >
+        <ScrollView>
           <View style={styles.itemList}>
             {
               Object.keys(products).reduce((accumulator, key) => {
@@ -164,18 +162,12 @@ class PosScreen extends Component {
             }
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
-    backgroundColor: '#FFF',
-  },
   categoryRow: {
     height: 40,
     flexDirection: 'row',
