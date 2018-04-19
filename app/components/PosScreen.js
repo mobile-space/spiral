@@ -152,8 +152,8 @@ class PosScreen extends Component {
 }
 
 PosScreen.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  cart: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  products: PropTypes.PropTypes.shape({}).isRequired,
+  cart: PropTypes.PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
   removeOneFromCart: PropTypes.func.isRequired,
 };

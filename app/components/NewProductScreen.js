@@ -154,7 +154,7 @@ class NewProductScreen extends Component {
 }
 
 NewProductScreen.propTypes = {
-  products: PropTypes.araryOf(PropTypes.shape({})).isRequired,
+  products: PropTypes.shape({}).isRequired,
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
   }).isRequired,
