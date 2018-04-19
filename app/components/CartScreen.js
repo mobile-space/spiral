@@ -70,8 +70,9 @@ class CartScreen extends Component {
                   quantity,
                   price: { local_currency: unitPrice },
                 } = cart[key];
-                
-                return accumulator + (quantity * unitPrice);
+
+                const total = accumulator + (quantity * unitPrice);
+                return +(`${Math.round(`${total}e+2`)}e-2`);
               }, 0)
             }
           </Text>
