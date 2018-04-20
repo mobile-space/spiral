@@ -14,9 +14,12 @@ export default class PaymentScreen extends Component {
 
     this.state = {
       isTransactionFinishedLoading: false,
+      isTransactionPending: true,
       transaction: null,
       interval: null,
+      coin: null,
       progress: new Animated.Value(0),
+      transactionStatus: null,
     }
   }
 
@@ -27,29 +30,39 @@ export default class PaymentScreen extends Component {
   componentWillUnmount() {
     clearInterval(this.state.interval);
   }
-  
+
+  checkTransactionStatus = (status) => {
+
+    console.log(status)
+    
+    if( status == 100){
+      this.setState( { isTransactionPending: false })
+    }
+  } 
+
   paymentStatusCallBack = async () => {
 
   const { transaction } = this.state;
+  var responseJSON = null;
     
   var interval = setInterval(async function() {
 
-      var details = {};
+      var details = { };
       details.transactionID = transaction.txn_id
       
-      var formBody = [];
+      var formBody = [ ];
 
-      for (var property in details) {
-        var encodedKey = encodeURIComponent(property);
-        var encodedValue = encodeURIComponent(details[property]);
+      for ( var property in details ) {
+        var encodedKey = encodeURIComponent( property );
+        var encodedValue = encodeURIComponent( details[ property ] );
 
-        formBody.push(encodedKey + "=" + encodedValue);
+        formBody.push( encodedKey + "=" + encodedValue );
       }
 
       formBody = formBody.join("&");
       
       try {
-        let response = await fetch(`https://crypto-payment-processor.herokuapp.com/payment/info`, {
+        let response = await fetch( `https://crypto-payment-processor.herokuapp.com/payment/info` , {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -57,25 +70,15 @@ export default class PaymentScreen extends Component {
           body: formBody
         });
         
-        var responseJSON = null; 
-
-        console.log(response)
-  
-        if (response.status === 200) {
-
+        if ( response.status === 200 ) {
           responseJSON = await response.json();
-          console.log(responseJSON);
+          checkTransactionStatus(responseJSON.status);    
         } else {
-          console.log(response.status);
         }
       } catch(error){
         console.log(error);
       }
     }, 6000);
-
-    console.log("test");
-
-    this.setState({interval: interval});
   }
 
   createTransaction = async () => {
@@ -92,12 +95,9 @@ export default class PaymentScreen extends Component {
       if (response.status === 200) {
         responseJSON = await response.json();
         this.setState({
-          isTransactionFinishedLoading: true,
           transaction: responseJSON,
+          isTransactionFinishedLoading: true,
         })
-
-        console.log(this.state.transaction);
-
         this.paymentStatusCallBack();
       } else {
         console.log(response.status);
@@ -107,9 +107,44 @@ export default class PaymentScreen extends Component {
     }
   }
 
+  renderTransactionStatusIndicator = () => {
+    Animated.timing(this.state.progress, {
+      toValue: 1,
+      duration: 10000,
+      easing: Easing.linear,
+    }).start();
+
+    return(
+      <View style = { styles.loadingTransaction }>
+        <LottieView
+          source= { require('../../assets/lottie/wallet_coin.json' ) } 
+          progress= { this.state.progress }
+          onPress={ () => this.props.navigation.navigate( 'pos' )}
+        />
+      </View>
+    )
+  }
+ 
+  renderTransactionPendingIndicator = () => {
+    Animated.timing(this.state.progress, {
+      toValue: 1,
+      duration: 5000,
+      easing: Easing.linear,
+    }).start();
+
+    return(
+      <View style = { styles.pendingTransaction }>
+        <LottieView
+          source= { require('../../assets/lottie/snap_loader_white.json' ) } 
+          progress= { this.state.progress }
+        />
+      </View>
+    )
+  }
+
   renderLoadingTransactionIndicator = () => {
 
-    Animated.timing(this.state.progress, {
+    Animated.timing( this.state.progress, {
       toValue: 1,
       duration: 5000,
       easing: Easing.linear,
@@ -132,7 +167,7 @@ export default class PaymentScreen extends Component {
 
   render() {
     const { navigation: { goBack } } = this.props 
-    const { transaction, isTransactionFinishedLoading } = this.state
+    const { transaction, isTransactionFinishedLoading, isTransactionPending } = this.state
     const qrDimension = Dimensions.get( 'window' ).width * 0.5
 
     return (
@@ -143,13 +178,13 @@ export default class PaymentScreen extends Component {
           end= {{ x:1.0, y: 1.0 }}
           locations= {[ 0.1, 0.8 ]}
       >
-
       <Header
           outerContainerStyles = {{
             marginTop: 24,
-            marginBottom: 24,
+            marginBottom: 16,
+            borderBottomWidth: 0,
           }}
-          backgroundColor= "rgba(0, 0, 0, 0, 0)"
+          backgroundColor= "rgba(0.0, 0.0, 0.0, 0.0)"
           leftComponent= {
             <TouchableOpacity onPress = { () => goBack() }>
               <Icon
@@ -172,8 +207,9 @@ export default class PaymentScreen extends Component {
         
         <View style = {{ padding: 10}}>
 
-          {isTransactionFinishedLoading && 
+          { isTransactionFinishedLoading && 
             <View style = { styles.paymentContainer }>
+
               <View style = { styles.qrContainer }>
                 <Image
                   source={{ uri: transaction.qrcode_url }}
@@ -189,48 +225,51 @@ export default class PaymentScreen extends Component {
                 <View style = { styles.amountLabelContainer }>
                     <Text style= { styles.amountLabelText }> Payment Amount: </Text>
                 </View>
+
                 <View style = { styles.amountTransactionContainer }>
-                  <Text style = { styles.amountTransactionContainer }> { transaction.amount}</Text>
+                  <Text style = { styles.amountTransactionText }> { transaction.amount} BTC</Text>
                 </View>
+
               </View>
 
-              
               <View style = { styles.addressContainer }>
+
                 <View style = { styles.addressLabelContainer }>
                     <Text style= { styles.addressLabelText }> Payment Address: </Text>
                 </View>
+
                 <View style = { styles.addressTransactionContainer }>
                   <Text style = { styles.addressTransactionText }> { transaction.address }</Text>
                 </View>
+
               </View>
-
-
-
             </View>
           }
         </View>
         {
           !isTransactionFinishedLoading && this.renderLoadingTransactionIndicator()
         }
-        
-        <View style = { styles.statusContainer }>
-
+        <View style= { styles.pendingTransactionContainer }>
+          {
+            isTransactionFinishedLoading && isTransactionPending && this.renderTransactionPendingIndicator() 
+          }
+          { 
+            isTransactionFinishedLoading && !isTransactionPending && this.renderTransactionStatusIndicator() 
+          }
         </View>
-
-
+        
         <TouchableOpacity
           style = { styles.goBackContainer }
           onPress= { () => goBack() }
-
         >
           <View style = { styles.goBackButton }>
             <Text style = { styles.goBackButtonText }> Go Back </Text>
           </View>
-         
+
         </TouchableOpacity>
 
-
         </SafeAreaView>
+        
       </LinearGradient>
 
     );
@@ -249,10 +288,36 @@ const styles = StyleSheet.create({
 
   
   addressContainer: {
+    marginTop: 5,
   },
 
   amountContainer: {
+    marginTop: 5,
+  },
 
+  amountLabelContainer: {
+
+  },
+
+  amountLabelText: {
+    color: '#fff', 
+    fontSize: 12,
+    fontWeight: 'normal'
+  }, 
+
+  amountTransactionText: {
+    padding: 15,
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold', 
+  },
+
+  amountTransactionContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(217,56,239, 0.4)',
+    borderRadius: 40,
+    marginTop: 5,
   },
 
   addressLabelText: {
@@ -302,12 +367,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  pendingTransaction: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: Dimensions.get( 'window' ).width * 0.5,
+    height: Dimensions.get( 'window' ).width * 0.5,
+    padding: 10,
+  },
+
   loadingTransaction: {
     width: Dimensions.get( 'window' ).width * 0.5,
     height: Dimensions.get( 'window' ).width * 0.5,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-  }
+  },
 
+  pendingTransactionContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: Dimensions.get( 'window' ).width * 0.5,
+    height: Dimensions.get( 'window' ).width * 0.5,
+  }
 });
