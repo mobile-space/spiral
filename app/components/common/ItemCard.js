@@ -22,6 +22,27 @@ class ItemCard extends Component {
     this.setState({ quantity });
   }
 
+  renderImage = ( image, name ) => {
+
+    if( image ) {
+      return (
+        <Image
+          style={styles.itemImage}
+          source={{ uri: image }}
+        />
+      )
+    } else {
+      if ( name ) {
+        return (
+          <View style = { styles.itemAbreviationContainer }>
+            <Text style = { styles.itemAbreviationText }> { name } </Text>
+          </View>
+        )
+      }
+    }
+
+  }
+
   render() {
     const {
       size, spacing, product, onMinusPressed, onPlusPressed,
@@ -41,11 +62,8 @@ class ItemCard extends Component {
           <Text style={styles.rowText}>{name}</Text>
         </View>
   
-        <Image
-          style={styles.itemImage}
-          source={{ uri: image }}
-        />
-        
+        { this.renderImage(image, name) }
+
         <View style={styles.row}>
           <Icon
             color="#FFF"
@@ -92,6 +110,7 @@ const styles = StyleSheet.create({
   container: {
     borderColor: 'rgba(0, 0, 0, 0.35)',
     borderWidth: 1,
+    borderRadius: 5,
   },
   row: {
     alignItems: 'center',
@@ -111,6 +130,17 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
+
+  itemAbreviationContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+
+  itemAbreviationText: {
+    fontSize: 20,
+  }
+
 });
 
 export default ItemCard;

@@ -2,7 +2,6 @@ import { StackNavigator } from 'react-navigation';
 
 import PosScreen from '../components/PosScreen';
 import NewProductScreen from '../components/NewProductScreen';
-import CheckoutStack from './CheckoutStack';
 
 import PaymentScreen from '../components/PaymentScreen';
 import CartScreen from '../components/CartScreen';
