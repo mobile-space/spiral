@@ -92,7 +92,7 @@ class PosScreen extends Component {
               name="cart"
               type="material-community"
               color="#000"
-              onPress={() => navigate('cart')}
+              onPress={() => navigate('checkoutStack')}
             />
           )}
         />
