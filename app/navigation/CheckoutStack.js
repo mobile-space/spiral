@@ -5,13 +5,6 @@ import CartScreen from '../components/CartScreen';
 import PosStack from './PosStack';
 
 export default StackNavigator({
-  payment: {
-    screen: PaymentScreen,
-  },
-
-  cart: {
-    screen: CartScreen
-  },
 
 },{
   initialRouteName: 'cart',

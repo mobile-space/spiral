@@ -260,7 +260,7 @@ export default class PaymentScreen extends Component {
         
         <TouchableOpacity
           style = { styles.goBackContainer }
-          onPress= { () => goBack() }
+          onPress= { () => this.props.navigation.navigate('pos') }
         >
           <View style = { styles.goBackButton }>
             <Text style = { styles.goBackButtonText }> Go Back </Text>

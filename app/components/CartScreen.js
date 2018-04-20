@@ -32,6 +32,9 @@ class CartScreen extends Component {
 
   render() {
     const { navigation, navigation: { goBack }, cart } = this.props;
+
+    console.log(goBack)
+    console.log(navigation.pop)
     
     return (
       <View style={{ flex: 1 }}>
@@ -42,7 +45,7 @@ class CartScreen extends Component {
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
-            <TouchableOpacity onPress={() => navigation.navigate('pos')}>
+            <TouchableOpacity onPress={() => navigation.pop()}>
               <Icon
                 color="#000"
                 name="close"
