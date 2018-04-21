@@ -3,52 +3,39 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Icon } from 'react-native-elements';
 
 class ItemCard extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      quantity: props.quantity,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { quantity } = nextProps;
-    this.setState({ quantity });
-  }
-
-  renderImage = ( image, name ) => {
-
-    if( image ) {
+  renderImage = (image, name) => {
+    if (image) {
       return (
         <Image
           style={styles.itemImage}
           source={{ uri: image }}
         />
-      )
-    } else {
-      if ( name ) {
-        return (
-          <View style = { styles.itemAbreviationContainer }>
-            <Text style = { styles.itemAbreviationText }> { name } </Text>
-          </View>
-        )
-      }
+      );
+    } else if (name) {
+      return (
+        <View style={styles.itemAbbreviationContainer}>
+          <Text style={styles.itemAbbreviationText}>{name}</Text>
+        </View>
+      );
     }
-
+    return null;
   }
 
   render() {
     const {
-      size, spacing, product, onMinusPressed, onPlusPressed,
+      size, spacing, product, onPress,
     } = this.props;
-    const { name, image } = product;
-    const { quantity } = this.state;
+    const {
+      name,
+      image,
+      price: { local_currency: localPrice },
+    } = product;
 
     const dimensions = {
       height: size,
@@ -57,39 +44,19 @@ class ItemCard extends Component {
     };
   
     return (
-      <View style={[styles.container, dimensions]}>
-        <View style={styles.row}>
-          <Text style={styles.rowText}>{name}</Text>
-        </View>
-  
-        { this.renderImage(image, name) }
+      <TouchableWithoutFeedback onPress={() => onPress(product)}>
+        <View style={[styles.container, dimensions]}>
+          <View style={styles.row}>
+            <Text style={styles.rowText}>{name}</Text>
+          </View>
+    
+          { this.renderImage(image, name) }
 
-        <View style={styles.row}>
-          <Icon
-            color="#FFF"
-            name="minus-circle-outline"
-            type="material-community"
-            onPress={() => {
-              if (quantity >= 1) {
-                this.setState({ quantity: quantity - 1 });
-                onMinusPressed();
-              }
-            }}
-          />
-  
-          <Text style={styles.rowText}>{quantity}</Text>
-  
-          <Icon
-            color="#FFF"
-            name="plus-circle-outline"
-            type="material-community"
-            onPress={() => {
-              this.setState({ quantity: quantity + 1 });
-              onPlusPressed();
-            }}
-          />
+          <View style={styles.row}>
+            <Text style={styles.rowText}>{`$ ${localPrice}`}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -101,9 +68,7 @@ ItemCard.propTypes = {
     name: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
   }).isRequired,
-  quantity: PropTypes.number.isRequired,
-  onMinusPressed: PropTypes.func.isRequired,
-  onPlusPressed: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -130,17 +95,14 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
-
-  itemAbreviationContainer: {
+  itemAbbreviationContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
   },
-
-  itemAbreviationText: {
+  itemAbbreviationText: {
     fontSize: 20,
-  }
-
+  },
 });
 
 export default ItemCard;

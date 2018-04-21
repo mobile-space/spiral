@@ -124,7 +124,7 @@ class NewProductScreen extends Component {
 
           <Input
             style={{ height: 40, marginBottom: 16 }}
-            placeholder="New Category"
+            placeholder="create new category"
             value={newCategory}
             onChangeText={(text) => {
               this.setState({
@@ -144,7 +144,7 @@ class NewProductScreen extends Component {
           <Input
             style={{ height: 40, marginBottom: 16 }}
             placeholder="price"
-            value={`${price || 0}`}
+            value={`${price || ''}`}
             onChangeText={text => this.setState({ price: parseFloat(text) })}
           />
         </ScrollView>
