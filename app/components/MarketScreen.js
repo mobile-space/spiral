@@ -33,7 +33,7 @@ class MarketScreen extends Component {
   }
 
   fetchMarket = () => {
-    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC&tsyms=BTC,USD';
+    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD';
 
     this.setState({ isFetchingMarket: true });
 
@@ -69,9 +69,9 @@ class MarketScreen extends Component {
             <Text style={styles.coinNameText}> {coin.name} </Text>
           </View>
         <View style={styles.priceCointainer}>
-        <Text style = {{fontSize: 15, color: 'white'}}> {this.state.active == 0 ? '₿': '$'} </Text>
+        <Text style = {{fontSize: 17, color: 'white'}}> {this.state.active == 0 ? '₿': '$'} </Text>
           <View style={styles.priceBox}>
-            <Text style={{ fontSize: 18, color: 'white', marginLeft: 5 }}> 
+            <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
               {this.state.active == 0 ? coin.BTC : coin.USD}
             </Text>
           </View>
@@ -114,9 +114,12 @@ class MarketScreen extends Component {
         <View style={styles.buttonGroupContainer} >
             <ButtonGroup
               buttons = {currencyChoice}
-              containerStyle = {{height: 30, borderRadius: 25, backgroundColor: 'white'}}
+              containerStyle = {styles.buttonStyle}
+              textStyle = {{color: 'white'}}
               selectedIndex = {active}
               onPress = {this.updateIndex}
+              selectedButtonStyle = {{backgroundColor: 'white'}}
+              selectedTextStyle = {{color: '#3E5151'}}
             />
         </View>
 
@@ -153,6 +156,16 @@ const styles = StyleSheet.create({
   },
   buttonGroupContainer: {
     marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonStyle: {
+    height: 30,
+    width: 200, 
+    borderRadius: 25, 
+    backgroundColor: '#3E5151', 
+    borderColor: '#3E5151', 
+    borderWidth: 0
   },
   priceCointainer: {
     flex: 1,
@@ -164,15 +177,15 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: "rgba(62,81,81,0.5)",
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5
   },
   coinNameText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold'
   },
 });
-
 
 export default MarketScreen;
