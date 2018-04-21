@@ -65,7 +65,6 @@ class ItemQuantityModal extends Component {
               <View style={styles.closeButtonContainer}>
                 <Icon
                   color="#FFF"
-                  // iconStyle={{ alignSelf: 'center' }}
                   name="close"
                   type="material-community"
                   onPress={() => onRequestClose()}

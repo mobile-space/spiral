@@ -8,26 +8,36 @@ import {
 } from 'react-native';
 import { PropTypes } from 'prop-types';
 
-class CartItem extends Component {
-  constructor(props) {
-    super(props);
+import CartQuantityModal from './CartQuantityModal';
 
-    const { quantity } = props.product;
-    this.state = {
-      quantity,
-    };
-  }
+class CartItem extends Component {
+  state = {
+    selectedProduct: null,
+  };
 
   render() {
     const {
-      product: { name, image, price: { local_currency: localPrice } },
       onMinusPressed,
       onPlusPressed,
+      product,
+      product: {
+        name, image, quantity, price: { local_currency: localPrice },
+      },
     } = this.props;
-    const { quantity } = this.state;
+    const { selectedProduct } = this.state;
 
     return (
       <View style={styles.container}>
+        {selectedProduct &&
+          <CartQuantityModal
+            onMinusPressed={onMinusPressed}
+            onPlusPressed={onPlusPressed}
+            onRequestClose={() => this.setState({ selectedProduct: null })}
+            product={selectedProduct}
+            visible
+          />
+        }
+
         <View style={styles.row}>
           <View style={styles.productContainer}>
             <View style={styles.product}>
@@ -43,29 +53,12 @@ class CartItem extends Component {
               </View>
             </View>
   
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => {
-                  this.setState({ quantity: quantity + 1 });
-                  onPlusPressed();
-                }}
-              >
-                <Text>+</Text>
-              </TouchableOpacity>
-  
+            <TouchableOpacity
+              style={styles.quantityContainer}
+              onPress={() => this.setState({ selectedProduct: product })}
+            >
               <Text style={styles.quantity}>{quantity}</Text>
-  
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={() => {
-                  this.setState({ quantity: quantity - 1 });
-                  onMinusPressed();
-                }}
-              >
-                <Text>-</Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
   
           <View style={styles.priceContainer}>
@@ -129,9 +122,12 @@ const styles = StyleSheet.create({
   },
   quantityContainer: {
     alignItems: 'center',
+    backgroundColor: '#DDD',
     flexDirection: 'column',
+    height: 32,
     justifyContent: 'center',
     marginRight: 24,
+    width: 32,
   },
   quantityButton: {
     alignItems: 'center',
