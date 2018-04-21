@@ -31,7 +31,11 @@ class CartScreen extends Component {
   };
 
   render() {
-    const { navigation, navigation: { goBack }, cart } = this.props;
+    const {
+      navigation,
+      navigation: { navigate, goBack },
+      cart,
+    } = this.props;
 
     console.log(goBack)
     console.log(navigation.pop)
@@ -89,11 +93,11 @@ class CartScreen extends Component {
               }, 0)
             }
           </Text>
-          <Text style={styles.totalCurrency}>BTC</Text>
+          <Text style={styles.totalCurrency}>USD</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.checkoutButtonContainer}
-          onPress={() => this.props.navigation.navigate('payment')}
+          onPress={() => navigate('payment')}
         >
           <View style={styles.checkoutButton}>
             <Text style={styles.checkoutButtonText}>Checkout</Text>
@@ -107,6 +111,7 @@ class CartScreen extends Component {
 CartScreen.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,

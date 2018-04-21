@@ -20,7 +20,7 @@ class CartItem extends Component {
 
   render() {
     const {
-      product: { name, image },
+      product: { name, image, price: { local_currency: localPrice } },
       onMinusPressed,
       onPlusPressed,
     } = this.props;
@@ -69,8 +69,8 @@ class CartItem extends Component {
           </View>
   
           <View style={styles.priceContainer}>
-            <Text style={styles.priceAmount}>1.25</Text>
-            <Text style={styles.priceCurrency}>BTC</Text>
+            <Text style={styles.priceAmount}>{localPrice}</Text>
+            <Text style={styles.priceCurrency}>USD</Text>
           </View>
         </View>
   
