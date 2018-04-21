@@ -2,6 +2,8 @@ import { StackNavigator } from 'react-navigation';
 
 import PosScreen from '../components/PosScreen';
 import NewProductScreen from '../components/NewProductScreen';
+
+import PaymentScreen from '../components/PaymentScreen';
 import CartScreen from '../components/CartScreen';
 
 export default StackNavigator({
@@ -12,11 +14,15 @@ export default StackNavigator({
     screen: NewProductScreen,
     navigationOptions: { tabBarVisible: false },
   },
+  payment: {
+    screen: PaymentScreen,
+    navigationOptions: { tabBarVisible: false },
+  },
   cart: {
     screen: CartScreen,
     navigationOptions: { tabBarVisible: false },
   },
 }, {
-  mode: 'modal',
   headerMode: 'none',
+  mode: 'modal',
 });

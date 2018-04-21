@@ -10,9 +10,12 @@ import {
   View,
 } from 'react-native';
 
+import { LinearGradient } from 'expo';
+import { Header, Icon } from 'react-native-elements';
+
 class TransactionsScreen extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -34,73 +37,96 @@ class TransactionsScreen extends Component {
         },
       });
 
-    var responseJSON = null; 
-    
-    if (response.status === 200) {
-      responseJSON = await response.json();
+      var responseJSON = null;
 
-      console.log(responseJSON)
+      if (response.status === 200) {
+        responseJSON = await response.json();
 
-      const transactions = this.filterTransactions(responseJSON);
+        console.log(responseJSON)
 
-      this.setState({
-        isFinishedLoadingTransactions: true,
-        transactions: transactions,
-      })
+        const transactions = this.filterTransactions(responseJSON);
 
-    } else {
-      console.log(response.status);
-    }
-    } catch(error){
+        this.setState({
+          isFinishedLoadingTransactions: true,
+          transactions: transactions,
+        })
+
+      } else {
+        console.log(response.status);
+      }
+    } catch (error) {
       console.log(error);
     }
-  } 
+  }
 
   filterTransactions = (transactions) => {
     var filteredTransactions = [];
 
     transactions.forEach(transaction => {
-      if(transaction.status == 100 || transaction.status == 0){
+      const status = transaction.status;
+
+      if (status == 100 || status == 0 || status == -1) {
         filteredTransactions.push(transaction);
       }
     });
     return filteredTransactions;
   }
 
-
-  _renderTransaction = ({item: transaction}) => {
-    return(
+  _renderTransaction = ({ item: transaction }) => {
+    return (
       <View style={[
         styles.transactionContainer,
-        {backgroundColor: transaction.status == 100 ? 'green' : 'yellow'}
+        { backgroundColor: transaction.status == 100 ? 'green' : "rgba(199,74,16, 0.5)" }
       ]}>
         <View style={styles.coinContainer}>
-          <Text style={styles.coin}>{transaction.coin}</Text>
+          <Text style={styles.coinText}>{transaction.coin}</Text>
         </View>
 
         <View style={styles.amountCountainer}>
-          <Text style={styles.amount}>{transaction.amountf}</Text>
+          <Text style={styles.amountText}>{transaction.amountf}</Text>
         </View>
       </View>
     );
-  
+
   }
 
   render() {
-    const { transactions, isFinishedLoadingTransactions  } = this.state; 
+    const { transactions, isFinishedLoadingTransactions } = this.state;
 
     return (
-      <SafeAreaView style={styles.safeAreaView}>
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={['#108dc7', '#ef8e38']}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        locations={[0.1, 0.8]}
+      >
+        <Header
+          outerContainerStyles={{
+            marginTop: 24,
+            marginBottom: 16,
+            borderBottomWidth: 0,
+          }}
+          backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
+          centerComponent={{
+            text: 'Transactions',
+            style: {
+              color: '#FFF',
+              fontSize: 24,
+              fontWeight: 'bold',
+            },
+          }}
+        />
         <ScrollView>
-          { isFinishedLoadingTransactions &&
+          {isFinishedLoadingTransactions &&
             <FlatList
-              keyExtractor = {(item, index) => index}
-              data = {transactions}
-              renderItem = {({item}) => this._renderTransaction({item})}
+              keyExtractor={(item, index) => index}
+              data={transactions}
+              renderItem={({ item }) => this._renderTransaction({ item })}
             />
           }
         </ScrollView>
-      </SafeAreaView>
+      </LinearGradient>
     );
   }
 }
@@ -111,26 +137,36 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
   },
 
-  transactionContainer:{
+  transactionContainer: {
     flexDirection: 'row',
     flex: 1,
+    padding: 5,
+    margin: 10,
+    borderRadius: 10,
   },
 
   coinContainer: {
     flex: 1,
     justifyContent: 'flex-start'
+
   },
 
   amountCountainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
 
-  amount: {
-    padding: 10,
+  amountText: {
+    padding: 5,
+    color: '#FFF',
+    fontSize: 12
   },
 
-  coin: {
-    padding: 10,
+  coinText: {
+    padding: 5,
+    color: '#FFF',
+    fontSize: 16
   }
 });
 
