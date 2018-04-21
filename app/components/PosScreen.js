@@ -137,11 +137,16 @@ class PosScreen extends Component {
             ))}
           </ScrollView>
 
-          <CategoryButton
+          <TouchableOpacity
             style={styles.plusButton}
             onPress={() => navigate('newProduct')}
-            title="+"
-          />
+          >
+            <Icon
+              name="plus"
+              type="material-community"
+              color="#000"
+            />
+          </TouchableOpacity>
         </View>
 
         <ScrollView>
