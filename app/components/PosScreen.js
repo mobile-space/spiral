@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
 import cardDimensions from '../utils/dimensions';
+import ItemQuantityModal from './common/ItemQuantityModal';
 // import fakeData from '../utils/fake_data';
 
 class PosScreen extends Component {
@@ -25,15 +26,18 @@ class PosScreen extends Component {
 
     const { products, cart } = this.props;
 
+    /* eslint-disable function-paren-newline  */
     const categories = Array.from(
-      new Set(Object.keys(products).map(key => products[key].category))
+      new Set(Object.keys(products).map(key => products[key].category)),
     );
+    /* eslint-enable function-paren-newline  */
 
     this.state = {
       products,
       cart,
       categories,
       selectedCategory: categories.length > 0 ? categories[0] : null,
+      selectedProduct: null,
     };
   }
 
@@ -45,13 +49,16 @@ class PosScreen extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { products, cart } = nextProps;
+
+    /* eslint-disable function-paren-newline  */
     this.setState({
       products,
       cart,
       categories: Array.from(
-        new Set(Object.keys(products).map(key => products[key].category))
+        new Set(Object.keys(products).map(key => products[key].category)),
       ),
     });
+    /* eslint-enable function-paren-newline  */
   }
 
   getCartQuantity = () => {
@@ -61,22 +68,26 @@ class PosScreen extends Component {
     ), 0);
   }
 
-  renderItemCard = () => (
-    <ItemCard size={cardDimensions.size} spacing={cardDimensions.spacing} />
-  );
-
   render() {
     const {
-      products, cart, categories, selectedCategory,
+      products, categories, selectedCategory, selectedProduct,
     } = this.state;
     const {
       navigation: { navigate, goBack },
-      addOneToCart,
-      removeOneFromCart,
+      addToCart,
     } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
+        {selectedProduct &&
+          <ItemQuantityModal
+            addToCartPressed={items => addToCart(items)}
+            onRequestClose={() => this.setState({ selectedProduct: null })}
+            product={selectedProduct}
+            visible
+          />
+        }
+
         <Header
           outerContainerStyles={{
             marginTop: 24,
@@ -144,9 +155,7 @@ class PosScreen extends Component {
                     size={cardDimensions.size}
                     spacing={cardDimensions.spacing}
                     product={products[key]}
-                    quantity={(cart[key] && cart[key].quantity) || 0}
-                    onMinusPressed={() => removeOneFromCart(products[key])}
-                    onPlusPressed={() => addOneToCart(products[key])}
+                    onPress={product => this.setState({ selectedProduct: product })}
                   />,
                 );
                 /* eslint-enable function-paren-newline  */
@@ -163,8 +172,7 @@ class PosScreen extends Component {
 PosScreen.propTypes = {
   products: PropTypes.PropTypes.shape({}).isRequired,
   cart: PropTypes.PropTypes.shape({}).isRequired,
-  addOneToCart: PropTypes.func.isRequired,
-  removeOneFromCart: PropTypes.func.isRequired,
+  addToCart: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -207,17 +215,13 @@ export default (() => {
   });
 
   /* eslint-disable global-require  */
-  const { addProduct } = require('../actions/products_actions');
   const {
-    addOneToCart,
-    removeOneFromCart,
+    addToCart,
   } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
-    addProduct,
-    addOneToCart,
-    removeOneFromCart,
+    addToCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(PosScreen);
