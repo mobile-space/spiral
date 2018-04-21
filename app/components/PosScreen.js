@@ -3,8 +3,9 @@
     ScrollView,
     StyleSheet,
     View,
+    TouchableOpacity
   } from 'react-native';
-  import { Icon, Header } from 'react-native-elements';
+  import { Icon, Header, Badge } from 'react-native-elements';
   import { PropTypes } from 'prop-types';
   import { connect } from 'react-redux';
 
@@ -88,12 +89,22 @@
               />
             )}
             rightComponent={(
-              <Icon
-                name="cart"
-                type="material-community"
-                color="#000"
-                onPress={() => navigate('cart')}
-              />
+              
+              <TouchableOpacity> 
+                <Badge
+                  value= { 3 }
+                  textStyle={{ color: '#fff' }}
+                  containerStyle = { styles.badge }
+                  wrapperStyle = {{ 
+                  }}
+                />
+                <Icon
+                  name = "cart"
+                  type = "material-community"
+                  color = "#000"
+                  onPress = { () => navigate('cart') }
+                />
+              </TouchableOpacity>   
             )}
           />
 
@@ -159,6 +170,7 @@
   };
 
   const styles = StyleSheet.create({
+    
     categoryRow: {
       height: 40,
       flexDirection: 'row',
@@ -167,17 +179,27 @@
       marginLeft: 16,
       marginRight: 16,
     },
+
     category: {
       marginLeft: 16,
       marginRight: 32,
     },
+
     plusButton: {
       marginLeft: 32,
     },
+
     itemList: {
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'wrap',
+    },
+
+    badge: {
+      backgroundColor: '#ef384e',
+      padding: 5,
+      left: 2,
+      top: 1,
     },
   });
 

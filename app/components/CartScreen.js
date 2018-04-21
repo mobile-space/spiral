@@ -61,18 +61,11 @@ class CartScreen extends Component {
               fontWeight: 'bold',
             },
           }}
-
           rightComponent={
-            <TouchableOpacity onPress={() => navigation.pop()}>
-              <Icon
-                color="#000"
-                name="close"
-                type="material-community"
-              />
+            <TouchableOpacity onPress={ () => navigation.pop() }>
+              <Text> Clear Cart</Text>
             </TouchableOpacity>
           }
-
-
         />
 
         <FlatList

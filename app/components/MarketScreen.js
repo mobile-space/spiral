@@ -1,78 +1,71 @@
 import React, { Component } from 'react';
-import { 
+import {
   NativeModules,
   Platform,
   SafeAreaView,
-  View, 
-  Text,  
+  View,
+  Text,
   StyleSheet,
   FlatList,
   ScrollView
 } from 'react-native';
 
-import { DIGITAL_MOCK_DATA } from '../utils/constant';
-
+import { Header } from 'react-native-elements';
+import { LinearGradient } from 'expo';
 class MarketScreen extends Component {
 
-  constructor(props){
-    super(props); 
+  constructor(props) {
+    super(props);
     //Have a state of coins and prices
     //isLoading state 
     //BTC, ETH, DASH, BCH
 
     this.state = {
-      coins: null,
-      isFetchingCoins: true,  
+      market: null,
+      isFetchingMarket: true,
+      error: null
     }
   }
 
   componentDidMount = async () => {
-    this.fetchPrices();
+    this.fetchMarket();
   }
 
-  fetchPrices = async () => {
-    try {
-      let response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH&tsyms=BTC,USD`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-      });
+  fetchMarket = () => {
+    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH&tsyms=BTC,USD';
 
-    var responseJSON = null; 
-    
-    if (response.status === 200) {
-      responseJSON = await response.json();
-      var result = [];
-      var keys = Object.keys(responseJSON);
+    this.setState({ isFetchingMarket: true });
 
-      keys.forEach(function(key){
+    fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        var market = [];
+        var keys = Object.keys(res);
 
-        var coin = Object.assign({},responseJSON[key],{name: key}) 
+        keys.forEach(function (key) {
+          var coin = Object.assign({}, res[key], { name: key })
+          market.push(coin);
+        });
 
-        result.push(coin);
-      });
-
-      console.log(result);
-
-      this.setState({
-        coins: result,
-        isFetchingCoins: false
+        this.setState({
+          market: market,
+          isFetchingMarket: false,
+          error: res.error || null,
+        })
+      }).catch(error => {
+        this.setState({
+          error: error,
+          isFetchingMarket: false,
+        })
       })
-    } else {
-      console.log(response.status);
-    }
-    } catch(error){
-      console.log(error);
-    }
-  } 
+  }
 
-  _renderList = ({item: coin}) => {
-    return(
+  _renderList = ({ item: coin }) => {
+    return (
       <View style={styles.listContainer}>
         <View style={styles.coinContainer} >
           <View style={styles.AbrCointaner} >
-            <Text style={{fontSize: 20}}> {coin.name} </Text>
+            <Text style={styles.coinNameText}> {coin.name} </Text>
           </View>
           <View style={styles.nameCointaner} >
             {/* <Text style={{color: 'grey'}}> {coin.name} </Text> */}
@@ -83,7 +76,7 @@ class MarketScreen extends Component {
         </View>
         <View style={styles.priceCointainer}>
           <View style={styles.priceBox}>
-            <Text style={{fontSize: 18, color: 'white'}}> ${coin.USD} </Text>
+            <Text style={{ fontSize: 18, color: 'white' }}> ${coin.USD} </Text>
           </View>
         </View>
       </View>
@@ -91,60 +84,78 @@ class MarketScreen extends Component {
   }
 
   render() {
-    const {isFetchingCoins, coins} = this.state
-    
+    const { isFetchingMarket, market } = this.state
+
     return (
-    <ScrollView style={{flex:1}}>
-      { !isFetchingCoins && 
-        <FlatList
-          keyExtractor = {(item, transaction) => transaction}
-          data = {coins}
-          renderItem = {({item}) => this._renderList({item})}
-        />
-      }
-      </ScrollView>
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={['#3E5151', '#DECBA4']}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        locations={[0.1, 0.8]}
+      >
+        <ScrollView style={{ flex: 1 }}>
+          {!isFetchingMarket &&
+            <FlatList
+              keyExtractor={(item, transaction) => transaction}
+              data={market}
+              renderItem={({ item }) => this._renderList({ item })}
+            />
+          }
+        </ScrollView>
+      </LinearGradient>
     );
   }
 }
 
 const styles = StyleSheet.create({
   listContainer: {
-    borderColor: '#C3C8C8',
-    borderBottomWidth: 1,
     height: 90,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     marginTop: 20
   },
+
   coinContainer: {
     flex: 1,
     flexDirection: 'column',
   },
+
   AbrCointaner: {
     marginLeft: 15
   },
+
   nameCointaner: {
     marginLeft: 15
   },
+
   graphContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   priceCointainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   priceBox: {
-    height: 30, 
-    width: 80, 
-    backgroundColor: '#61CA9D', 
-    justifyContent: 'center', 
+    height: 30,
+    width: 80,
+    backgroundColor: '#61CA9D',
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5
-  }
+  },
+
+  coinNameText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+
 });
 
 
