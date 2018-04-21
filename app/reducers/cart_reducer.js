@@ -4,6 +4,7 @@ import {
   INCREASE_QUANTITY,
   DECREASE_QUANTITY,
   REMOVE_FROM_CART,
+  CLEAR_CART,
 } from '../actions/types';
 
 const INITIAL_STATE = {};
@@ -79,6 +80,9 @@ export default (state = INITIAL_STATE, action) => {
       delete clone[productId];
       return clone;
     }
+
+    case CLEAR_CART:
+      return INITIAL_STATE;
 
     default:
       return state;
