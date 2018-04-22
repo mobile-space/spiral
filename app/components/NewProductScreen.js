@@ -10,7 +10,6 @@ import {
 import {
   Header,
   Icon,
-  Overlay,
 } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
