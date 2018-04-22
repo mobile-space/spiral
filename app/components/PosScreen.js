@@ -77,6 +77,8 @@ class PosScreen extends Component {
       addToCart,
     } = this.props;
 
+    const quantity = this.getCartQuantity();
+
     return (
       <View style={{ flex: 1 }}>
         {selectedProduct &&
@@ -96,9 +98,10 @@ class PosScreen extends Component {
           backgroundColor="rgba(0,0,0,0)"
           leftComponent={
             <Icon
-              name="menu"
               color="#000"
-              onPress={() => goBack()}
+              name="plus"
+              onPress={() => navigate('newProduct')}
+              type="material-community"
             />
           }
           rightComponent={
@@ -111,12 +114,15 @@ class PosScreen extends Component {
                 type="material-community"
                 color="#000"
               />
-              <Badge
-                value={this.getCartQuantity()}
-                textStyle={{ color: '#fff' }}
-                containerStyle={styles.badge}
-                wrapperStyle={{}}
-              />
+
+              {!!quantity &&
+                <Badge
+                  value={this.getCartQuantity()}
+                  textStyle={{ color: '#fff' }}
+                  containerStyle={styles.badge}
+                  wrapperStyle={{}}
+                />
+              }
             </TouchableOpacity>
           }
         />
@@ -136,17 +142,6 @@ class PosScreen extends Component {
               />
             ))}
           </ScrollView>
-
-          <TouchableOpacity
-            style={styles.plusButton}
-            onPress={() => navigate('newProduct')}
-          >
-            <Icon
-              name="plus"
-              type="material-community"
-              color="#000"
-            />
-          </TouchableOpacity>
         </View>
 
         <ScrollView>
@@ -189,22 +184,15 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
   },
-
   category: {
     marginLeft: 16,
     marginRight: 32,
   },
-
-  plusButton: {
-    marginLeft: 32,
-  },
-
   itemList: {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-
   badge: {
     backgroundColor: '#ef384e',
     padding: 5,

@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import {
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {
   Header,
   Icon,
-  Input,
-  ListItem,
 } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
+import NewCategoryModal from './common/NewCategoryModal';
 
 class NewProductScreen extends Component {
   constructor(props) {
@@ -24,9 +26,9 @@ class NewProductScreen extends Component {
     this.state = {
       name: '',
       categories,
-      categoryIndex: null,
+      selectedCategory: '',
+      isNewCategoryVisible: false,
       newCategory: '',
-      image: '',
       price: null,
     };
   }
@@ -41,17 +43,16 @@ class NewProductScreen extends Component {
     const productId = Math.max(...ids) + 1;
 
     const {
-      name, categories, categoryIndex, newCategory, image, price,
+      name, selectedCategory, newCategory, price,
     } = this.state;
 
-    if (categoryIndex === null && newCategory === '') return;
-    const category = categoryIndex !== null ? categories[categoryIndex] : newCategory;
+    if (!selectedCategory && newCategory === '') return;
+    const category = selectedCategory || newCategory;
 
     const newProduct = {
       productId,
       name,
       category,
-      image,
       price: {
         local_currency: price,
       },
@@ -61,14 +62,55 @@ class NewProductScreen extends Component {
     goBack();
   };
 
+  showCategories = () => {
+    const {
+      categories, selectedCategory, newCategory,
+    } = this.state;
+
+    return (
+      newCategory ? [newCategory, ...categories] : categories
+    )
+      .map(category => (
+        <TouchableOpacity
+          key={category}
+          style={styles.category}
+          onPress={() => this.setState({
+            selectedCategory: category,
+            newCategory: '',
+          })}
+        >
+          <Text style={[
+              styles.categoryText,
+              (newCategory || selectedCategory) === category && { fontWeight: 'bold' },
+            ]}
+          >
+            {category}
+          </Text>
+        </TouchableOpacity>
+      ));
+  }
+
   render() {
     const {
-      name, categories, categoryIndex, newCategory, image, price,
+      name, isNewCategoryVisible, newCategory, price,
     } = this.state;
     const { navigation: { goBack } } = this.props;
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        {isNewCategoryVisible &&
+          <NewCategoryModal
+            category={newCategory}
+            onRequestClose={(category) => {
+              this.setState({
+                  isNewCategoryVisible: false,
+                  newCategory: category,
+              });
+            }}
+            visible={isNewCategoryVisible}
+          />
+        }
+
         <Header
           outerContainerStyles={{
             marginTop: 24,
@@ -85,7 +127,7 @@ class NewProductScreen extends Component {
             </TouchableOpacity>
           }
           centerComponent={{
-            text: 'New Product',
+            text: 'New Item',
             style: {
               color: '#000',
               fontSize: 24,
@@ -104,54 +146,72 @@ class NewProductScreen extends Component {
         />
 
         <ScrollView>
-          <Input
-            style={{ height: 40, marginBottom: 16 }}
-            placeholder="name"
+          <TextInput
+            style={styles.field}
+            placeholder="Name"
             value={name}
             onChangeText={text => this.setState({ name: text })}
+            underlineColorAndroid="rgba(0,0,0,0)"
           />
 
-          {
-            categories.map((category, index) => (
-              <ListItem
-                key={category}
-                title={category}
-                checkmark={categoryIndex === index}
-                onPress={() => this.setState({ categoryIndex: index, newCategory: '' })}
-              />
-            ))
-          }
+          <View style={styles.categoryRow}>
+            <Icon
+              color="#000"
+              name="plus"
+              onPress={() => this.setState({ isNewCategoryVisible: true })}
+              type="material-community"
+            />
 
-          <Input
-            style={{ height: 40, marginBottom: 16 }}
-            placeholder="create new category"
-            value={newCategory}
-            onChangeText={(text) => {
-              this.setState({
-                categoryIndex: (text ? null : categoryIndex),
-                newCategory: text,
-              });
-            }}
-          />
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {this.showCategories()}
+            </ScrollView>
+          </View>
 
-          <Input
-            style={{ height: 40, marginBottom: 16 }}
-            placeholder="image"
-            value={image}
-            onChangeText={text => this.setState({ image: text })}
-          />
-
-          <Input
-            style={{ height: 40, marginBottom: 16 }}
-            placeholder="price"
+          <TextInput
+            style={styles.field}
+            placeholder="Price in USD"
             value={`${price || ''}`}
             onChangeText={text => this.setState({ price: parseFloat(text) })}
+            underlineColorAndroid="rgba(0,0,0,0)"
           />
         </ScrollView>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  field: {
+    borderBottomWidth: 1,
+    borderColor: '#CCC',
+    height: 40,
+    marginBottom: 16,
+  },
+  categoryRow: {
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 16,
+    marginTop: 8,
+  },
+  category: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 24,
+  },
+  categoryText: {
+    fontSize: 16,
+  },
+});
 
 NewProductScreen.propTypes = {
   products: PropTypes.shape({}).isRequired,

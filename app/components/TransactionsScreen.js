@@ -8,10 +8,15 @@ import {
   ScrollView,
   FlatList,
   View,
+  SectionList
 } from 'react-native';
 
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
+
+var complete = [];
+var incomplete = [];
+var pending = [];
 
 class TransactionsScreen extends Component {
 
@@ -23,6 +28,7 @@ class TransactionsScreen extends Component {
       transactions: null,
     }
   }
+  
 
   componentDidMount = async () => {
     this.fetchTransactions();
@@ -68,11 +74,24 @@ class TransactionsScreen extends Component {
       if (status == 100 || status == 0 || status == -1) {
         filteredTransactions.push(transaction);
       }
+
+      if(status == 0 )
+      {
+        pending.push(transaction);
+      }
+      else if( status == -1) {
+        incomplete.push(transaction);
+      }
+      else if( status == 100)
+      {
+        complete.push(transaction);
+      }
     });
     return filteredTransactions;
   }
 
   _renderTransaction = ({ item: transaction }) => {
+
     return (
       <View style={[
         styles.transactionContainer,
@@ -87,7 +106,16 @@ class TransactionsScreen extends Component {
         </View>
       </View>
     );
-
+  }
+  
+  getSectionsData() {
+    return (
+      [ 
+        { title: 'Complete', data: complete }, 
+        { title: 'Pending', data: pending }, 
+        { title: 'Incomplete', data: incomplete }
+      ]
+    )
   }
 
   render() {
@@ -123,12 +151,12 @@ class TransactionsScreen extends Component {
           </View>
 
           {isFinishedLoadingTransactions &&
-            <FlatList
-              keyExtractor={(item, index) => index}
-              data={transactions}
-              renderItem={({ item }) => this._renderTransaction({ item })}
-            />
-          }
+            <SectionList 
+              renderItem={( {item} ) => this._renderTransaction({item})} 
+              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginLeft: 15 }}>{title}</Text>}              
+              sections={this.getSectionsData()} 
+              keyExtractor={(item, index) => item + index} />
+            }
         </ScrollView>
       </LinearGradient>
     );
