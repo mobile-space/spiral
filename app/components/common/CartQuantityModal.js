@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Dimensions,
-  Image,
   Modal,
   StyleSheet,
   Text,
@@ -33,11 +32,8 @@ class CartQuantityModal extends Component {
 
   render() {
     const {
-      onMinusPressed, onPlusPressed, onRequestClose, product, visible,
+      onMinusPressed, onPlusPressed, onRequestClose, visible,
     } = this.props;
-    const {
-      name, image, price: { local_currency: localPrice },
-    } = product;
   
     const { quantity } = this.state;
 

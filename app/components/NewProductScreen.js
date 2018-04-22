@@ -10,9 +10,11 @@ import {
 import {
   Header,
   Icon,
+  Overlay,
 } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
+import NewCategoryModal from './common/NewCategoryModal';
 
 class NewProductScreen extends Component {
   constructor(props) {
@@ -26,6 +28,7 @@ class NewProductScreen extends Component {
       name: '',
       categories,
       selectedCategory: '',
+      isNewCategoryVisible: false,
       newCategory: '',
       price: null,
     };
@@ -60,14 +63,55 @@ class NewProductScreen extends Component {
     goBack();
   };
 
+  showCategories = () => {
+    const {
+      categories, selectedCategory, newCategory,
+    } = this.state;
+
+    return (
+      newCategory ? [newCategory, ...categories] : categories
+    )
+      .map(category => (
+        <TouchableOpacity
+          key={category}
+          style={styles.category}
+          onPress={() => this.setState({
+            selectedCategory: category,
+            newCategory: '',
+          })}
+        >
+          <Text style={[
+              styles.categoryText,
+              (newCategory || selectedCategory) === category && { fontWeight: 'bold' },
+            ]}
+          >
+            {category}
+          </Text>
+        </TouchableOpacity>
+      ));
+  }
+
   render() {
     const {
-      name, categories, selectedCategory, newCategory, price,
+      name, isNewCategoryVisible, newCategory, price,
     } = this.state;
     const { navigation: { goBack } } = this.props;
 
     return (
       <View style={styles.container}>
+        {isNewCategoryVisible &&
+          <NewCategoryModal
+            category={newCategory}
+            onRequestClose={(category) => {
+              this.setState({
+                  isNewCategoryVisible: false,
+                  newCategory: category,
+              });
+            }}
+            visible={isNewCategoryVisible}
+          />
+        }
+
         <Header
           outerContainerStyles={{
             marginTop: 24,
@@ -115,7 +159,7 @@ class NewProductScreen extends Component {
             <Icon
               color="#000"
               name="plus"
-              onPress={() => {}}
+              onPress={() => this.setState({ isNewCategoryVisible: true })}
               type="material-community"
             />
 
@@ -124,24 +168,7 @@ class NewProductScreen extends Component {
               horizontal
               showsHorizontalScrollIndicator={false}
             >
-              {categories.map(category => (
-                <TouchableOpacity
-                  key={category}
-                  style={styles.category}
-                  onPress={() => this.setState({
-                    selectedCategory: category,
-                    newCategory: '',
-                  })}
-                >
-                  <Text style={[
-                      styles.categoryText,
-                      selectedCategory === category && { fontWeight: 'bold' },
-                    ]}
-                  >
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {this.showCategories()}
             </ScrollView>
           </View>
 
