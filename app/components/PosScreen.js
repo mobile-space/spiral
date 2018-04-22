@@ -98,9 +98,10 @@ class PosScreen extends Component {
           backgroundColor="rgba(0,0,0,0)"
           leftComponent={
             <Icon
-              name="menu"
               color="#000"
-              onPress={() => goBack()}
+              name="plus"
+              onPress={() => navigate('newProduct')}
+              type="material-community"
             />
           }
           rightComponent={
@@ -127,17 +128,6 @@ class PosScreen extends Component {
         />
 
         <View style={styles.categoryRow}>
-          <TouchableOpacity
-            style={styles.plusButton}
-            onPress={() => navigate('newProduct')}
-          >
-            <Icon
-              name="plus"
-              type="material-community"
-              color="#000"
-            />
-          </TouchableOpacity>
-
           <ScrollView
             style={{ flex: 1 }}
             horizontal
@@ -197,9 +187,6 @@ const styles = StyleSheet.create({
   category: {
     marginLeft: 16,
     marginRight: 32,
-  },
-  plusButton: {
-    marginRight: 16,
   },
   itemList: {
     display: 'flex',
