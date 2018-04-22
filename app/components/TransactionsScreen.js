@@ -95,7 +95,7 @@ class TransactionsScreen extends Component {
     return (
       <View style={[
         styles.transactionContainer,
-        { backgroundColor: transaction.status == 0 ? 'green' : 'grey' }
+        { backgroundColor: transaction.status == 100 ? 'green' : "rgba(217,56,239, 0.4)" }
       ]}>
         <View style={styles.coinContainer}>
           <Text style={styles.coinText}>{transaction.coin}</Text>
@@ -124,7 +124,7 @@ class TransactionsScreen extends Component {
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#108dc7', '#ef8e38']}
+        colors={['#11998e', '#38ef7d']}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
         locations={[0.1, 0.8]}
@@ -145,7 +145,11 @@ class TransactionsScreen extends Component {
             },
           }}
         />
-        <ScrollView>
+        <ScrollView style={styles.container}>
+          <View style = {styles.balanceContainer}>
+            <Text style={styles.balanceText}> Balance: 55 BTC </Text>
+          </View>
+
           {isFinishedLoadingTransactions &&
             <SectionList 
               renderItem={( {item} ) => this._renderTransaction({item})} 
@@ -165,6 +169,11 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
   },
 
+  constainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   transactionContainer: {
     flexDirection: 'row',
     flex: 1,
@@ -173,11 +182,25 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  balanceContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    height: 60, 
+    backgroundColor: 'rgba(217,56,239, 0.1)',
+    borderRadius: 10,
+  },  
+
   coinContainer: {
     flex: 1,
     justifyContent: 'flex-start'
-
   },
+
+  balanceText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },  
 
   amountCountainer: {
     flex: 1,

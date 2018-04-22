@@ -90,7 +90,7 @@ class MarketScreen extends Component {
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#3E5151', '#DECBA4']}
+        colors={['#11998e', '#38ef7d']}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
         locations={[0.1, 0.8]}
@@ -163,9 +163,8 @@ const styles = StyleSheet.create({
     height: 30,
     width: 200, 
     borderRadius: 25, 
-    backgroundColor: '#3E5151', 
-    borderColor: '#3E5151', 
-    borderWidth: 0
+    backgroundColor: 'rgba(217,56,239, 0.3)', 
+    borderWidth: 0, 
   },
   priceCointainer: {
     flex: 1,
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
   priceBox: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(62,81,81,0.5)",
+    backgroundColor: "rgba(217,56,239, 0.3)",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
