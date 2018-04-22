@@ -66,7 +66,7 @@ ItemCard.propTypes = {
   spacing: PropTypes.number.isRequired,
   product: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
   }).isRequired,
   onPress: PropTypes.func.isRequired,
 };
