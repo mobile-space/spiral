@@ -57,7 +57,9 @@ class NewCategoryModal extends Component {
                 style={styles.closeButton}
                 onPress={() => onRequestClose(category)}
               >
-                <Text style={styles.closeButtonText}>Save</Text>
+                <Text style={styles.closeButtonText}>
+                  {category ? 'Save' : 'Close'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
