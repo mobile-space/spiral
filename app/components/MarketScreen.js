@@ -7,7 +7,8 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 
 import { Header, ButtonGroup } from 'react-native-elements';
@@ -16,9 +17,6 @@ class MarketScreen extends Component {
 
   constructor(props) {
     super(props);
-    //Have a state of coins and prices
-    //isLoading state 
-    //BTC, ETH, DASH, BCH
 
     this.state = {
       market: null,
@@ -32,10 +30,11 @@ class MarketScreen extends Component {
     this.fetchMarket();
   }
 
-  fetchMarket = () => {
-    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD';
-
+  async fetchMarket() {
+    
+    console.log("Updating")
     this.setState({ isFetchingMarket: true });
+    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD';
 
     fetch(url)
       .then(res => res.json())
@@ -69,10 +68,12 @@ class MarketScreen extends Component {
             <Text style={styles.coinNameText}> {coin.name} </Text>
           </View>
         <View style={styles.priceCointainer}>
-        <Text style = {{fontSize: 17, color: 'white'}}> {this.state.active == 0 ? '₿': '$'} </Text>
+          <View style={{justifyContent: 'center'}}>
+            <Text style = {{fontSize: 17, color: 'white', }}> {this.state.active == 0 ? '₿': '$'} </Text>
+          </View>
           <View style={styles.priceBox}>
             <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
-              {this.state.active == 0 ? coin.BTC : coin.USD}
+              {this.state.active == 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2)}
             </Text>
           </View>
         </View>
@@ -83,16 +84,53 @@ class MarketScreen extends Component {
     this.setState({active: selectedIndex})
   }
 
+  loadingView() {
+    return(
+      <View style={styles.loadingView}>
+        <ActivityIndicator size="large"/>
+      </View>
+    );
+  }
+
+  contentView() {
+    const {isFetchingMarket, market, active} = this.state;
+    const currencyChoice = ['BitCoin','USD'];
+    return (
+
+      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
+
+        <View style={styles.buttonGroupContainer} >
+          <ButtonGroup
+            buttons = {currencyChoice}
+            containerStyle = {styles.buttonStyle}
+            textStyle = {{color: 'white'}}
+            selectedIndex = {active}
+            onPress = {this.updateIndex}
+            selectedButtonStyle = {{backgroundColor: 'white'}}
+            selectedTextStyle = {{color: '#3E5151'}}
+          />
+        </View>
+        <FlatList style={{marginTop: 15}}
+          keyExtractor={(item, transaction) => transaction}
+          data={market}
+          extraData = {this.state}
+          renderItem={({ item }) => this._renderList({ item })}
+          onRefresh={() => this.fetchMarket()}
+          refreshing={isFetchingMarket}
+        />
+      </View>
+    )
+}
+
   render() {
     const { isFetchingMarket, market, active } = this.state
-    const currencyChoice = ['BitCoin','USD'];
     
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#3E5151', '#DECBA4']}
-        start={{ x: 0.0, y: 0.0 }}
-        end={{ x: 1.0, y: 1.0 }}
+        colors={['#f093fb', '#f5576c']}
+        start={{ x: 1.0, y: 1.0 }}
+        end={{ x: 0.1, y: 0.0 }}
         locations={[0.1, 0.8]}
       >
       <Header
@@ -111,28 +149,8 @@ class MarketScreen extends Component {
             },
           }}
         />
-        <View style={styles.buttonGroupContainer} >
-            <ButtonGroup
-              buttons = {currencyChoice}
-              containerStyle = {styles.buttonStyle}
-              textStyle = {{color: 'white'}}
-              selectedIndex = {active}
-              onPress = {this.updateIndex}
-              selectedButtonStyle = {{backgroundColor: 'white'}}
-              selectedTextStyle = {{color: '#3E5151'}}
-            />
-        </View>
-
         <ScrollView style={{ flex: 1 }}>
-          {!isFetchingMarket &&
-            <FlatList style={{marginTop: 15}}
-              keyExtractor={(item, transaction) => transaction}
-              data={market}
-              extraData = {this.state}
-              renderItem={({ item }) => this._renderList({ item })}
-              //TODO: Full to Refresh
-            />
-          }
+          { isFetchingMarket ? this.loadingView() : this.contentView() }
         </ScrollView>
       </LinearGradient>
     );
@@ -142,13 +160,18 @@ class MarketScreen extends Component {
 const styles = StyleSheet.create({
   listContainer: {
     height: 60,
-    borderColor: '#aaa',
+    borderColor: 'white',
     borderBottomWidth: 1,
     marginLeft: 10,
     marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  loadingView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nameCointaner: {
     flex: 1,
@@ -182,7 +205,7 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   coinNameText: {
-    color: '#fff',
+    color: 'white',
     fontSize: 18,
     fontWeight: 'bold'
   },
