@@ -7,23 +7,22 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 
-import { Header } from 'react-native-elements';
+import { Header, ButtonGroup } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 class MarketScreen extends Component {
 
   constructor(props) {
     super(props);
-    //Have a state of coins and prices
-    //isLoading state 
-    //BTC, ETH, DASH, BCH
 
     this.state = {
       market: null,
       isFetchingMarket: true,
-      error: null
+      error: null,
+      active: 0,
     }
   }
 
@@ -31,10 +30,11 @@ class MarketScreen extends Component {
     this.fetchMarket();
   }
 
-  fetchMarket = () => {
-    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH&tsyms=BTC,USD';
-
+  async fetchMarket() {
+    
+    console.log("Updating")
     this.setState({ isFetchingMarket: true });
+    const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD';
 
     fetch(url)
       .then(res => res.json())
@@ -61,47 +61,96 @@ class MarketScreen extends Component {
   }
 
   _renderList = ({ item: coin }) => {
+
     return (
       <View style={styles.listContainer}>
-        <View style={styles.coinContainer} >
-          <View style={styles.AbrCointaner} >
+          <View style={styles.nameCointaner} >
             <Text style={styles.coinNameText}> {coin.name} </Text>
           </View>
-          <View style={styles.nameCointaner} >
-            {/* <Text style={{color: 'grey'}}> {coin.name} </Text> */}
-          </View>
-        </View>
-        <View style={styles.graphContainer}>
-          {/* <Text> graph </Text> */}
-        </View>
         <View style={styles.priceCointainer}>
+          <View style={{justifyContent: 'center'}}>
+            <Text style = {{fontSize: 17, color: 'white', }}> {this.state.active == 0 ? '₿': '$'} </Text>
+          </View>
           <View style={styles.priceBox}>
-            <Text style={{ fontSize: 18, color: 'white' }}> ${coin.USD} </Text>
+            <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
+              {this.state.active == 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2)}
+            </Text>
           </View>
         </View>
       </View>
     )
   }
+  updateIndex = (selectedIndex) => {
+    this.setState({active: selectedIndex})
+  }
+
+  loadingView() {
+    return(
+      <View style={styles.loadingView}>
+        <ActivityIndicator size="large"/>
+      </View>
+    );
+  }
+
+  contentView() {
+    const {isFetchingMarket, market, active} = this.state;
+    const currencyChoice = ['BitCoin','USD'];
+    return (
+
+      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
+
+        <View style={styles.buttonGroupContainer} >
+          <ButtonGroup
+            buttons = {currencyChoice}
+            containerStyle = {styles.buttonStyle}
+            textStyle = {{color: 'white'}}
+            selectedIndex = {active}
+            onPress = {this.updateIndex}
+            selectedButtonStyle = {{backgroundColor: 'white'}}
+            selectedTextStyle = {{color: '#3E5151'}}
+          />
+        </View>
+        <FlatList style={{marginTop: 15}}
+          keyExtractor={(item, transaction) => transaction}
+          data={market}
+          extraData = {this.state}
+          renderItem={({ item }) => this._renderList({ item })}
+          onRefresh={() => this.fetchMarket()}
+          refreshing={isFetchingMarket}
+        />
+      </View>
+    )
+}
 
   render() {
-    const { isFetchingMarket, market } = this.state
-
+    const { isFetchingMarket, market, active } = this.state
+    
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#3E5151', '#DECBA4']}
+        colors={['#11998e', '#38ef7d']}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
         locations={[0.1, 0.8]}
       >
+      <Header
+          outerContainerStyles={{
+            marginTop: 24,
+            marginBottom: 16,
+            borderBottomWidth: 0,
+          }}
+          backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
+          centerComponent={{
+            text: " Market ",
+            style: {
+              color: '#FFF',
+              fontSize: 24,
+              fontWeight: 'bold',
+            },
+          }}
+        />
         <ScrollView style={{ flex: 1 }}>
-          {!isFetchingMarket &&
-            <FlatList
-              keyExtractor={(item, transaction) => transaction}
-              data={market}
-              renderItem={({ item }) => this._renderList({ item })}
-            />
-          }
+          { isFetchingMarket ? this.loadingView() : this.contentView() }
         </ScrollView>
       </LinearGradient>
     );
@@ -110,53 +159,55 @@ class MarketScreen extends Component {
 
 const styles = StyleSheet.create({
   listContainer: {
-    height: 90,
+    height: 60,
+    borderColor: 'white',
+    borderBottomWidth: 1,
+    marginLeft: 10,
+    marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    marginTop: 20
   },
-
-  coinContainer: {
+  loadingView: {
     flex: 1,
-    flexDirection: 'column',
-  },
-
-  AbrCointaner: {
-    marginLeft: 15
-  },
-
-  nameCointaner: {
-    marginLeft: 15
-  },
-
-  graphContainer: {
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-
+  nameCointaner: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  buttonGroupContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonStyle: {
+    height: 30,
+    width: 200, 
+    borderRadius: 25, 
+    backgroundColor: 'rgba(217,56,239, 0.3)', 
+    borderWidth: 0, 
+  },
   priceCointainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
-
   priceBox: {
-    height: 30,
-    width: 80,
-    backgroundColor: '#61CA9D',
+    height: 40,
+    width: 100,
+    backgroundColor: "rgba(217,56,239, 0.3)",
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5
   },
-
   coinNameText: {
-    color: '#fff',
-    fontSize: 16,
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold'
   },
-
 });
-
 
 export default MarketScreen;

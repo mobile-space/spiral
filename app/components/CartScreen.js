@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   FlatList,
   TouchableOpacity,
   StyleSheet,
@@ -13,9 +14,25 @@ import { connect } from 'react-redux';
 import CartItem from './common/CartItem';
 
 class CartScreen extends Component {
-
   static navigationOptions = {
     headerMode: 'none',
+  }
+
+  showClearCartAlert = () => {
+    const {
+      navigation: { pop },
+      clearCart,
+    } = this.props;
+
+    Alert.alert(
+      'Clear Cart',
+      'Are you sure you want to clear the cart? This cannot be undone.',
+      [
+        { text: 'No' },
+        { text: 'OK', onPress: () => { clearCart(); pop(); } },
+      ],
+      { cancelable: false },
+    );
   }
 
   renderCartItem = (product) => {
@@ -31,10 +48,10 @@ class CartScreen extends Component {
   };
 
   render() {
-    const { navigation, navigation: { goBack }, cart } = this.props;
-
-    console.log(goBack)
-    console.log(navigation.pop)
+    const {
+      navigation: { navigate, pop },
+      cart,
+    } = this.props;
     
     return (
       <View style={{ flex: 1 }}>
@@ -45,7 +62,7 @@ class CartScreen extends Component {
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
-            <TouchableOpacity onPress={() => navigation.pop()}>
+            <TouchableOpacity onPress={() => pop()}>
               <Icon
                 color="#000"
                 name="close"
@@ -62,7 +79,7 @@ class CartScreen extends Component {
             },
           }}
           rightComponent={
-            <TouchableOpacity onPress={ () => navigation.pop() }>
+            <TouchableOpacity onPress={this.showClearCartAlert}>
               <Text> Clear Cart</Text>
             </TouchableOpacity>
           }
@@ -89,11 +106,11 @@ class CartScreen extends Component {
               }, 0)
             }
           </Text>
-          <Text style={styles.totalCurrency}>BTC</Text>
+          <Text style={styles.totalCurrency}>USD</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.checkoutButtonContainer}
-          onPress={() => this.props.navigation.navigate('payment')}
+          onPress={() => navigate('payment')}
         >
           <View style={styles.checkoutButton}>
             <Text style={styles.checkoutButtonText}>Checkout</Text>
@@ -106,11 +123,13 @@ class CartScreen extends Component {
 
 CartScreen.propTypes = {
   navigation: PropTypes.shape({
-    goBack: PropTypes.func.isRequired,
+    pop: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
   }).isRequired,
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
   removeOneFromCart: PropTypes.func.isRequired,
+  clearCart: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -170,12 +189,14 @@ export default (() => {
   const {
     addOneToCart,
     removeOneFromCart,
+    clearCart,
   } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
     addOneToCart,
     removeOneFromCart,
+    clearCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);

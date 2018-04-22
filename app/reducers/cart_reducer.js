@@ -1,9 +1,9 @@
 import {
   ADD_ONE_TO_CART,
   REMOVE_ONE_FROM_CART,
-  INCREASE_QUANTITY,
-  DECREASE_QUANTITY,
+  ADD_TO_CART,
   REMOVE_FROM_CART,
+  CLEAR_CART,
 } from '../actions/types';
 
 const INITIAL_STATE = {};
@@ -52,22 +52,20 @@ export default (state = INITIAL_STATE, action) => {
       return state;
     }
 
-    case INCREASE_QUANTITY: {
-      const { productId } = action.payload;
-      return {
-        ...state,
-        [productId]: Object.assign(state[productId], {
-          quantity: state[productId].quantity + 1,
-        }),
-      };
-    }
+    case ADD_TO_CART: {
+      const {
+        product,
+        product: { productId },
+        quantity,
+      } = action.payload;
 
-    case DECREASE_QUANTITY: {
-      const { productId } = action.payload;
+      const originalQuantity = (state[productId] && state[productId].quantity) ?
+        state[productId].quantity : 0;
+
       return {
         ...state,
-        [productId]: Object.assign(state[productId], {
-          quantity: state[productId].quantity - 1,
+        [productId]: Object.assign(state[productId] || product, {
+          quantity: originalQuantity + quantity,
         }),
       };
     }
@@ -79,6 +77,9 @@ export default (state = INITIAL_STATE, action) => {
       delete clone[productId];
       return clone;
     }
+
+    case CLEAR_CART:
+      return INITIAL_STATE;
 
     default:
       return state;
