@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 16,
     paddingRight: 16,
-    borderRadius: 10,
   },
   rowText: {
     flex: 1,

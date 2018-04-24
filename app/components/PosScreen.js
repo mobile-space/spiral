@@ -85,12 +85,12 @@ class PosScreen extends Component {
 
     return (
       <LinearGradient
-      style={{ flex: 1 }}
-      colors={['#000000', '#434343']}
-      start={{ x: 0.0, y: 0.0 }}
-      end={{ x: 1.0, y: 1.0 }}
-      locations={[0.1, 0.8]}
-    >
+        style={{ flex: 1 }}
+        colors={['#000000', '#323232']}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        locations={[0.2, 0.8]}
+      >
         {selectedProduct &&
           <ItemQuantityModal
             addToCartPressed={items => addToCart(items)}

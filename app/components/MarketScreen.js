@@ -106,8 +106,8 @@ class MarketScreen extends Component {
             textStyle = {{color: 'white'}}
             selectedIndex = {active}
             onPress = {this.updateIndex}
-            selectedButtonStyle = {{backgroundColor: 'white'}}
-            selectedTextStyle = {{color: '#3E5151'}}
+            selectedButtonStyle = {{backgroundColor: '#006600'}}
+            selectedTextStyle = {{color: 'white'}}
           />
         </View>
         <FlatList style={{marginTop: 15}}
@@ -127,11 +127,11 @@ class MarketScreen extends Component {
     
     return (
       <LinearGradient
-        style={{ flex: 1 }}
-        colors={['#000000', '#e74c3c']}
-        start={{ x: 0.0, y: 0.0 }}
-        end={{ x: 1.0, y: 1.0 }}
-        locations={[0.2, 0.8]}
+      style={{ flex: 1 }}
+      colors={['#000000', '#323232']}
+      start={{ x: 0.0, y: 0.0 }}
+      end={{ x: 1.0, y: 1.0 }}
+      locations={[0.2, 0.8]}
       >
       <Header
           outerContainerStyles={{
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 200, 
     borderRadius: 25, 
-    backgroundColor: 'rgba(102,	255,	204, 0.3)', 
+    backgroundColor: 'rgba(132,132,132, 0.2)', 
     borderWidth: 0, 
   },
   priceCointainer: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   priceBox: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(72,104,	56, 0.5)",
+    backgroundColor: "rgba(132,132,132, 0.2)",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

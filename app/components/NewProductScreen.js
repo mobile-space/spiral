@@ -78,8 +78,9 @@ class NewProductScreen extends Component {
             selectedCategory: category,
             newCategory: '',
           })}
+          activeOpacity={1}
         >
-        <View style = {[(newCategory || selectedCategory) === category && { borderBottomWidth: 2, borderBottomColor: '#000'}]}>
+        <View style = {[styles.selectedCategory, (newCategory || selectedCategory) === category && { borderWidth: 2, borderBottomColor: '#000', borderRadius: 15}]}>
           <Text style={[
               styles.categoryText,
               (newCategory || selectedCategory) === category && { fontWeight: 'bold'},
@@ -213,6 +214,12 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 16,
   },
+
+  selectedCategory: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
 NewProductScreen.propTypes = {
