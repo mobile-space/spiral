@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Icon, Header, Badge } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { LinearGradient } from 'expo';
 
 import CategoryButton from './common/CategoryButton';
 import ItemCard from './common/ItemCard';
@@ -72,6 +73,9 @@ class PosScreen extends Component {
     const {
       products, categories, selectedCategory, selectedProduct,
     } = this.state;
+
+      
+
     const {
       navigation: { navigate, goBack },
       addToCart,
@@ -80,7 +84,13 @@ class PosScreen extends Component {
     const quantity = this.getCartQuantity();
 
     return (
-      <View style={{ flex: 1 }}>
+      <LinearGradient
+      style={{ flex: 1 }}
+      colors={['#000000', '#434343']}
+      start={{ x: 0.0, y: 0.0 }}
+      end={{ x: 1.0, y: 1.0 }}
+      locations={[0.1, 0.8]}
+    >
         {selectedProduct &&
           <ItemQuantityModal
             addToCartPressed={items => addToCart(items)}
@@ -89,133 +99,134 @@ class PosScreen extends Component {
             visible
           />
         }
-
-        <Header
-          outerContainerStyles={{
-            marginTop: 24,
-            marginBottom: 24,
-          }}
-          backgroundColor="rgba(0,0,0,0)"
-          leftComponent={
-            <Icon
-              color="#000"
-              name="plus"
-              onPress={() => navigate('newProduct')}
-              type="material-community"
-            />
-          }
-          rightComponent={
-            <TouchableOpacity
-              style={{ flexDirection: 'row' }}
-              onPress={() => navigate('cart')}
-            >
+          <Header
+            outerContainerStyles={{
+              marginTop: 24,
+              marginBottom: 24,
+              borderBottomWidth: 0,
+            }}
+            backgroundColor="rgba(0,0,0,0)"
+            leftComponent={
               <Icon
-                name="cart"
+                color="#fff"
+                name="plus"
+                onPress={() => navigate('newProduct')}
                 type="material-community"
-                color="#000"
               />
-
-              {!!quantity &&
-                <Badge
-                  value={this.getCartQuantity()}
-                  textStyle={{ color: '#fff' }}
-                  containerStyle={styles.badge}
-                  wrapperStyle={{}}
+            }
+            rightComponent={
+              <TouchableOpacity
+                style={{ flexDirection: 'row' }}
+                onPress={() => navigate('cart')}
+              >
+                <Icon
+                  name="cart"
+                  type="material-community"
+                  color="#fff"
                 />
-              }
-            </TouchableOpacity>
-          }
-        />
 
-        <View style={styles.categoryRow}>
-          <ScrollView
-            style={{ flex: 1 }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {categories.map(category => (
-              <CategoryButton
-                key={category}
-                style={styles.category}
-                onPress={() => this.setState({ selectedCategory: category })}
-                title={category}
-              />
-            ))}
-          </ScrollView>
-        </View>
+                {!!quantity &&
+                  <Badge
+                    value={this.getCartQuantity()}
+                    textStyle={{ color: '#fff' }}
+                    containerStyle={styles.badge}
+                    wrapperStyle={{}}
+                  />
+                }
+              </TouchableOpacity>
+            }
+          />
 
-        <ScrollView>
-          <View style={styles.itemList}>
-            {Object.keys(products).reduce((accumulator, key) => {
-              if (products[key].category === selectedCategory) {
-                /* eslint-disable function-paren-newline  */
-                return accumulator.concat(
-                  <ItemCard
-                    key={products[key].productId}
-                    size={cardDimensions.size}
-                    spacing={cardDimensions.spacing}
-                    product={products[key]}
-                    onPress={product => this.setState({ selectedProduct: product })}
-                  />,
-                );
-                /* eslint-enable function-paren-newline  */
-              }
-              return accumulator;
-            }, [])}
+          <View style={styles.categoryRow}>
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {categories.map(category => (
+                <CategoryButton
+                  key={category}
+                  style= {styles.category}
+                  onPress={() => this.setState({ selectedCategory: category })}
+                  title={category}
+                  isSelected = {( category === selectedCategory )}
+                />
+              ))}
+            </ScrollView>
           </View>
-        </ScrollView>
-      </View>
-    );
-  }
-}
 
+          <ScrollView>
+            <View style={styles.itemList}>
+              {Object.keys(products).reduce((accumulator, key) => {
+                if (products[key].category === selectedCategory) {
+                  /* eslint-disable function-paren-newline  */
+                  return accumulator.concat(
+                    <ItemCard
+                      key={products[key].productId}
+                      size={cardDimensions.size}
+                      spacing={cardDimensions.spacing}
+                      product={products[key]}
+                      onPress={product => this.setState({ selectedProduct: product })}
+                    />,
+                  );
+                  /* eslint-enable function-paren-newline  */
+                }
+                return accumulator;
+              }, [])}
+            </View>
+          </ScrollView>
+      </LinearGradient>
+        );
+      }
+    }
+    
 PosScreen.propTypes = {
-  products: PropTypes.PropTypes.shape({}).isRequired,
+          products: PropTypes.PropTypes.shape({}).isRequired,
   cart: PropTypes.PropTypes.shape({}).isRequired,
-  addToCart: PropTypes.func.isRequired,
-};
-
+        addToCart: PropTypes.func.isRequired,
+      };
+      
 const styles = StyleSheet.create({
-  categoryRow: {
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 8,
-    marginLeft: 16,
-    marginRight: 16,
-  },
+          categoryRow: {
+          height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 8,
+        marginLeft: 16,
+        marginRight: 16,
+      },
   category: {
-    marginLeft: 16,
-    marginRight: 32,
-  },
+          marginLeft: 16,
+        marginRight: 32,
+      },
   itemList: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
+          display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+      },
   badge: {
-    backgroundColor: '#ef384e',
-    padding: 5,
-    left: 2,
-    top: 1,
-  },
-});
-
+          backgroundColor: '#ef384e',
+        padding: 5,
+        left: 2,
+        top: 1,
+      },
+    });
+    
 export default (() => {
   const mapStateToProps = state => ({
-    products: state.products,
-    cart: state.cart,
-  });
-
-  /* eslint-disable global-require  */
+          products: state.products,
+        cart: state.cart,
+      });
+    
+      /* eslint-disable global-require  */
   const {
-    addToCart,
-  } = require('../actions/cart_actions');
-  /* eslint-enable global-require  */
-
+          addToCart,
+        } = require('../actions/cart_actions');
+        /* eslint-enable global-require  */
+      
   const mapDispatchToProps = {
-    addToCart,
-  };
-
-  return connect(mapStateToProps, mapDispatchToProps)(PosScreen);
-})();
+          addToCart,
+        };
+      
+        return connect(mapStateToProps, mapDispatchToProps)(PosScreen);
+      })();

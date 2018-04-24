@@ -128,10 +128,10 @@ class MarketScreen extends Component {
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#11998e', '#38ef7d']}
+        colors={['#000000', '#e74c3c']}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
-        locations={[0.1, 0.8]}
+        locations={[0.2, 0.8]}
       >
       <Header
           outerContainerStyles={{
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 200, 
     borderRadius: 25, 
-    backgroundColor: 'rgba(217,56,239, 0.3)', 
+    backgroundColor: 'rgba(102,	255,	204, 0.3)', 
     borderWidth: 0, 
   },
   priceCointainer: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   priceBox: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(217,56,239, 0.3)",
+    backgroundColor: "rgba(72,104,	56, 0.5)",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   coinNameText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'normal'
   },
 });
 

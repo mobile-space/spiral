@@ -79,13 +79,15 @@ class NewProductScreen extends Component {
             newCategory: '',
           })}
         >
+        <View style = {[(newCategory || selectedCategory) === category && { borderBottomWidth: 2, borderBottomColor: '#000'}]}>
           <Text style={[
               styles.categoryText,
-              (newCategory || selectedCategory) === category && { fontWeight: 'bold' },
+              (newCategory || selectedCategory) === category && { fontWeight: 'bold'},
             ]}
           >
             {category}
           </Text>
+        </View>
         </TouchableOpacity>
       ));
   }
