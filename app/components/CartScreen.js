@@ -20,6 +20,20 @@ class CartScreen extends Component {
     headerMode: 'none',
   }
 
+  state = {
+    currencyConversion: null,
+  }
+
+  componentDidMount() {
+    fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD')
+      .then(res => res.json())
+      .then((res) => {
+        /* eslint-disable react/no-did-mount-set-state */
+        this.setState({ currencyConversion: res });
+        /* eslint-enable react/no-did-mount-set-state */
+      });
+  }
+
   showClearCartAlert = () => {
     const {
       navigation: { pop },
@@ -77,7 +91,12 @@ class CartScreen extends Component {
       cart,
     } = this.props;
 
+    const { currencyConversion } = this.state;
+
     const total = this.calculateTotal(cart);
+    const totalInCrypto = currencyConversion && currencyConversion.BTC && currencyConversion.BTC.USD ? (
+      total / currencyConversion.BTC.USD
+    ) : null;
 
     return (
       <View style={{ flex: 1 }}>
@@ -127,6 +146,22 @@ class CartScreen extends Component {
             <Text style={styles.totalText}>Total: </Text>
             <Text style={styles.totalAmount}>{total}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
+
+            {totalInCrypto &&
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.totalSeparator}>/</Text>
+                <Text style={styles.totalAmount}>
+                  {
+                    totalInCrypto >= 1 ? (
+                      Number.parseFloat(total / currencyConversion.BTC.USD).toPrecision(4)
+                    ) : (
+                      Number.parseFloat(total / currencyConversion.BTC.USD).toPrecision(2)
+                    )
+                  }
+                </Text>
+                <Text style={styles.totalCurrency}>BTC</Text>
+              </View>
+            }
           </View>
 
           <TouchableOpacity
@@ -162,7 +197,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   totalContainer: {
-
     flexDirection: 'row',
     height: 24,
     marginBottom: 16,
@@ -188,7 +222,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  checkoutContainer: {
+  totalSeparator: {
+    color: '#fff',
+    fontSize: 18,
+    marginLeft: 4,
+    marginRight: 4,
   },
   checkoutButtonContainer: {
     backgroundColor: '#006600',
@@ -232,4 +270,3 @@ export default (() => {
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);
 })();
-
