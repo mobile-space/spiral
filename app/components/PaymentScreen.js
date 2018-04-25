@@ -21,6 +21,7 @@ export default class PaymentScreen extends Component {
       progress: new Animated.Value(0),
       transactionStatus: null,
     }
+    this.checkTransactionStatus = this.checkTransactionStatus.bind(this);
   }
 
   componentDidMount = async () => {
@@ -31,19 +32,23 @@ export default class PaymentScreen extends Component {
     clearInterval(this.state.interval);
   }
 
-  checkTransactionStatus = (status) => {
+  checkTransactionStatus = async (status) => {
 
-    console.log(status)
+    const { transaction } = this.state;
+    var responseJSON = null;
     
+    console.log(status)
+
     if( status == 100){
       this.setState( { isTransactionPending: false })
     }
   } 
 
-  paymentStatusCallBack = async () => {
+  paymentStatusCallBack = () => {
 
   const { transaction } = this.state;
   var responseJSON = null;
+  var self = this;
     
   var interval = setInterval(async function() {
 
@@ -72,13 +77,13 @@ export default class PaymentScreen extends Component {
         
         if ( response.status === 200 ) {
           responseJSON = await response.json();
-          checkTransactionStatus(responseJSON.status);    
+          self.checkTransactionStatus(responseJSON.status);    
         } else {
         }
       } catch(error){
         console.log(error);
       }
-    }, 6000);
+    }, 60000);
   }
 
   createTransaction = async () => {
@@ -153,8 +158,9 @@ export default class PaymentScreen extends Component {
     return(
       <View style = { styles.loadingTransaction }>
         <LottieView
-          source= { require('../../assets/lottie/snap_loader_white.json' ) } 
-          progress= { this.state.progress }
+          source = { require('../../assets/lottie/snap_loader_white.json' ) } 
+          progress = { this.state.progress }
+          loop = { true } 
         />
       </View>
     )
@@ -268,10 +274,7 @@ export default class PaymentScreen extends Component {
 
         </TouchableOpacity>
         </ScrollView>
-
         </SafeAreaView>
-        
-
       </LinearGradient>
 
     );

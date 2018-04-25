@@ -13,6 +13,8 @@ import {
 
 import { Header, ButtonGroup } from 'react-native-elements';
 import { LinearGradient } from 'expo';
+
+
 class MarketScreen extends Component {
 
   constructor(props) {
@@ -92,15 +94,17 @@ class MarketScreen extends Component {
     );
   }
 
-  contentView() {
+  renderLeftMarketHeader = () => {
+    return (
+        <Text style = {styles.headerText}> ₿ Market </Text>
+    );
+  }
+
+  renderMarketToggle = () => {
     const {isFetchingMarket, market, active} = this.state;
     const currencyChoice = ['BitCoin','USD'];
     return (
-
-      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
-
-        <View style={styles.buttonGroupContainer} >
-          <ButtonGroup
+      <ButtonGroup
             buttons = {currencyChoice}
             containerStyle = {styles.buttonStyle}
             textStyle = {{color: 'white'}}
@@ -109,7 +113,27 @@ class MarketScreen extends Component {
             selectedButtonStyle = {{backgroundColor: '#006600'}}
             selectedTextStyle = {{color: 'white'}}
           />
-        </View>
+    )
+  }
+
+  contentView() {
+    const {isFetchingMarket, market, active} = this.state;
+    const currencyChoice = ['BitCoin','USD'];
+    return (
+
+      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
+
+          {/* <View style={styles.buttonGroupContainer} >
+            <ButtonGroup
+              buttons = {currencyChoice}
+              containerStyle = {styles.buttonStyle}
+              textStyle = {{color: 'white'}}
+              selectedIndex = {active}
+              onPress = {this.updateIndex}
+              selectedButtonStyle = {{backgroundColor: '#006600'}}
+              selectedTextStyle = {{color: 'white'}}
+            />
+        </View> */}
         <FlatList style={{marginTop: 15}}
           keyExtractor={(item, transaction) => transaction}
           data={market}
@@ -139,15 +163,11 @@ class MarketScreen extends Component {
             marginBottom: 16,
             borderBottomWidth: 0,
           }}
+
+          leftComponent={this.renderLeftMarketHeader()}
           backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
-          centerComponent={{
-            text: " Market ",
-            style: {
-              color: '#FFF',
-              fontSize: 24,
-              fontWeight: 'bold',
-            },
-          }}
+          rightComponent={this.renderMarketToggle()
+          }
         />
         <ScrollView style={{ flex: 1 }}>
           { isFetchingMarket ? this.loadingView() : this.contentView() }
@@ -207,6 +227,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'normal'
+  },
+  
+  headerText: {
+    color: "#66ffcc",
+    fontSize: 24,
+    fontWeight: 'bold'
+
   },
 });
 
