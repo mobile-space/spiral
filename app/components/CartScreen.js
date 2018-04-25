@@ -37,6 +37,18 @@ class CartScreen extends Component {
     );
   }
 
+  calculateTotal = cart => (
+    Object.keys(cart).reduce((accumulator, key) => {
+      const {
+        quantity,
+        price: { local_currency: unitPrice },
+      } = cart[key];
+
+      const total = accumulator + (quantity * unitPrice);
+      return +(`${Math.round(`${total}e+2`)}e-2`);
+    }, 0)
+  );
+
   renderCartItem = (product) => {
     const { addOneToCart, removeOneFromCart, removeFromCart } = this.props;
     const swipeoutButtons = [
@@ -64,7 +76,9 @@ class CartScreen extends Component {
       navigation: { navigate, pop },
       cart,
     } = this.props;
-    
+
+    const total = this.calculateTotal(cart);
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -111,25 +125,14 @@ class CartScreen extends Component {
         >
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>Total: </Text>
-            <Text style={styles.totalAmount}>
-              {
-                Object.keys(cart).reduce((accumulator, key) => {
-                  const {
-                    quantity,
-                    price: { local_currency: unitPrice },
-                  } = cart[key];
-
-                  const total = accumulator + (quantity * unitPrice);
-                  return +(`${Math.round(`${total}e+2`)}e-2`);
-                }, 0)
-              }
-            </Text>
+            <Text style={styles.totalAmount}>{total}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
           </View>
 
           <TouchableOpacity
+            disabled={!total}
+            onPress={() => total && navigate('payment')}
             style={styles.checkoutButtonContainer}
-            onPress={() => navigate('payment')}
           >
             <View style={styles.checkoutButton}>
               <Text style={styles.checkoutButtonText}>Checkout</Text>
