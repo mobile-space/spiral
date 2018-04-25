@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Platform, NativeModules } from 'react-native';
 import { ButtonGroup, Input} from 'react-native-elements';
 
 export default class ConvertScreen extends Component {

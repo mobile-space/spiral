@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing} from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
@@ -172,11 +172,11 @@ export default class PaymentScreen extends Component {
 
     return (
       <LinearGradient
-          style= {{ flex: 1} }
-          colors = {[ '#11998e','#38ef7d' ]}
-          start= {{ x: 0.0, y: 0.0 }}
-          end= {{ x:1.0, y: 1.0 }}
-          locations= {[ 0.1, 0.8 ]}
+        style={{ flex: 1 }}
+        colors={['#000000', '#323232']}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        locations={[0.2, 0.8]}
       >
       <Header
           outerContainerStyles = {{
@@ -204,8 +204,8 @@ export default class PaymentScreen extends Component {
           }}
         />
         <SafeAreaView style = { styles.safeAreaView }>
-        
-        <View style = {{ padding: 10}}>
+        <ScrollView contentContainerStyle = { styles.container}>
+        <View style = {{ paddingTop: 10}}>
 
           { isTransactionFinishedLoading && 
             <View style = { styles.paymentContainer }>
@@ -267,9 +267,11 @@ export default class PaymentScreen extends Component {
           </View>
 
         </TouchableOpacity>
+        </ScrollView>
 
         </SafeAreaView>
         
+
       </LinearGradient>
 
     );
@@ -279,8 +281,15 @@ export default class PaymentScreen extends Component {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
+    height: '100%',
     alignItems: 'center',
     paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
+  },
+
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
   },
 
   paymentContainer: {
@@ -315,7 +324,7 @@ const styles = StyleSheet.create({
   amountTransactionContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(217,56,239, 0.4)',
+    backgroundColor: '#006600',
     borderRadius: 40,
     marginTop: 5,
   },
@@ -336,7 +345,7 @@ const styles = StyleSheet.create({
   addressTransactionContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(217,56,239, 0.3)',
+    backgroundColor: '#006600',
     borderRadius: 40,
     marginTop: 5,
   },

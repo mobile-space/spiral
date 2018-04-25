@@ -73,13 +73,13 @@ ItemCard.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: 'rgba(0, 0, 0, 0.35)',
+    borderColor: '#006600',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   row: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    backgroundColor: '#006600',
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    backgroundColor: '#fff',
   },
   itemAbbreviationText: {
     fontSize: 20,

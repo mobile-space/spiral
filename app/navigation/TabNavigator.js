@@ -100,11 +100,12 @@ export default TabNavigator({
   tabBarOptions: {
     showIcon: true,
     showLabel: true,
-    activeTintColor: '#000',
+    activeTintColor: '#FFF',
     inactiveTintColor: '#AAA',
     style: {
-      backgroundColor: '#FFF',
+      backgroundColor: '#4c4c4c',
       padding: Platform.OS === 'ios' ? 5 : 0,
+
     },
     indicatorStyle: {
       backgroundColor: '#FFF',
