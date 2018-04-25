@@ -140,8 +140,9 @@ export default class PaymentScreen extends Component {
     return(
       <View style = { styles.pendingTransaction }>
         <LottieView
-          source= { require('../../assets/lottie/snap_loader_white.json' ) } 
-          progress= { this.state.progress }
+          source= { require('../../assets/lottie/loading_loop_white.json' ) } 
+          progress = { this.state.progress }
+          loop = {true}
         />
       </View>
     )

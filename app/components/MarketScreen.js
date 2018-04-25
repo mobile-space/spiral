@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   priceBox: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(132,132,132, 0.2)",
+    backgroundColor: "#006600",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
