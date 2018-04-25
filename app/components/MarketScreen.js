@@ -8,11 +8,14 @@ import {
   StyleSheet,
   FlatList,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl
 } from 'react-native';
 
 import { Header, ButtonGroup } from 'react-native-elements';
 import { LinearGradient } from 'expo';
+
+
 class MarketScreen extends Component {
 
   constructor(props) {
@@ -23,6 +26,7 @@ class MarketScreen extends Component {
       isFetchingMarket: true,
       error: null,
       active: 0,
+      refreshing: false,
     }
   }
 
@@ -31,9 +35,6 @@ class MarketScreen extends Component {
   }
 
   async fetchMarket() {
-    
-    console.log("Updating")
-    this.setState({ isFetchingMarket: true });
     const url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD';
 
     fetch(url)
@@ -50,6 +51,7 @@ class MarketScreen extends Component {
         this.setState({
           market: market,
           isFetchingMarket: false,
+          refreshing: false,
           error: res.error || null,
         })
       }).catch(error => {
@@ -84,23 +86,25 @@ class MarketScreen extends Component {
     this.setState({active: selectedIndex})
   }
 
-  loadingView() {
-    return(
-      <View style={styles.loadingView}>
-        <ActivityIndicator size="large"/>
-      </View>
+  onRefresh = () => {
+    console.log("test")
+    this.setState({
+      refreshing: true,
+    });
+    this.fetchMarket();
+  }
+
+  renderLeftMarketHeader = () => {
+    return (
+        <Text style = {styles.headerText}> ₿ Market </Text>
     );
   }
 
-  contentView() {
+  renderMarketToggle = () => {
     const {isFetchingMarket, market, active} = this.state;
     const currencyChoice = ['BitCoin','USD'];
     return (
-
-      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
-
-        <View style={styles.buttonGroupContainer} >
-          <ButtonGroup
+      <ButtonGroup
             buttons = {currencyChoice}
             containerStyle = {styles.buttonStyle}
             textStyle = {{color: 'white'}}
@@ -109,21 +113,29 @@ class MarketScreen extends Component {
             selectedButtonStyle = {{backgroundColor: '#006600'}}
             selectedTextStyle = {{color: 'white'}}
           />
-        </View>
+    )
+  }
+
+  contentView() {
+    const {isFetchingMarket, market, active, refreshing} = this.state;
+    const currencyChoice = ['BitCoin','USD'];
+    return (
+
+      <View style = {{flex: 1,backgroundColor: 'transparent' }} >
         <FlatList style={{marginTop: 15}}
           keyExtractor={(item, transaction) => transaction}
           data={market}
           extraData = {this.state}
           renderItem={({ item }) => this._renderList({ item })}
-          onRefresh={() => this.fetchMarket()}
-          refreshing={isFetchingMarket}
+          onRefresh={() => this.onRefresh()}
+          refreshing={refreshing}
         />
       </View>
     )
 }
 
   render() {
-    const { isFetchingMarket, market, active } = this.state
+    const { isFetchingMarket, market, active, refreshing  } = this.state
     
     return (
       <LinearGradient
@@ -139,19 +151,13 @@ class MarketScreen extends Component {
             marginBottom: 16,
             borderBottomWidth: 0,
           }}
+
+          leftComponent={this.renderLeftMarketHeader()}
           backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
-          centerComponent={{
-            text: " Market ",
-            style: {
-              color: '#FFF',
-              fontSize: 24,
-              fontWeight: 'bold',
-            },
-          }}
+          rightComponent={this.renderMarketToggle()
+          }
         />
-        <ScrollView style={{ flex: 1 }}>
-          { isFetchingMarket ? this.loadingView() : this.contentView() }
-        </ScrollView>
+          { isFetchingMarket ? null : this.contentView() }
       </LinearGradient>
     );
   }
@@ -197,7 +203,7 @@ const styles = StyleSheet.create({
   priceBox: {
     height: 40,
     width: 100,
-    backgroundColor: "rgba(132,132,132, 0.2)",
+    backgroundColor: "#006600",
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -207,6 +213,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'normal'
+  },
+  
+  headerText: {
+    color: "#66ffcc",
+    fontSize: 24,
+    fontWeight: 'bold'
+
   },
 });
 

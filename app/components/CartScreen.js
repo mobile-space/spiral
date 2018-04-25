@@ -10,6 +10,7 @@ import {
 import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { LinearGradient } from 'expo';
 
 import CartItem from './common/CartItem';
 
@@ -91,6 +92,14 @@ class CartScreen extends Component {
           renderItem={({ item }) => this.renderCartItem(item)}
         />
 
+
+
+       <LinearGradient
+        colors={['#000000', '#323232']}
+        start={{ x: 0.0, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        locations={[0.2, 0.8]}
+      >
         <View style={styles.totalContainer}>
           <Text style={styles.totalText}>Total: </Text>
           <Text style={styles.totalAmount}>
@@ -116,6 +125,7 @@ class CartScreen extends Component {
             <Text style={styles.checkoutButtonText}>Checkout</Text>
           </View>
         </TouchableOpacity>
+      </LinearGradient>
       </View>
     );
   }
@@ -151,18 +161,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 8,
     fontWeight: 'bold',
+    color: '#fff'
   },
   totalAmount: {
     fontSize: 18,
     fontStyle: 'italic',
     marginRight: 8,
+    color: '#fff'
   },
   totalCurrency: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff' 
+  },
+  checkoutContainer: {
   },
   checkoutButtonContainer: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#006600',
     borderRadius: 30,
     height: 60,
     margin: 16,
