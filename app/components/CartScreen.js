@@ -38,8 +38,8 @@ class CartScreen extends Component {
 
   showClearCartAlert = () => {
     const {
-      navigation: { pop },
       clearCart,
+      screenProps: { dismiss },
     } = this.props;
 
     Alert.alert(
@@ -47,7 +47,7 @@ class CartScreen extends Component {
       'Are you sure you want to clear the cart? This cannot be undone.',
       [
         { text: 'No' },
-        { text: 'OK', onPress: () => { clearCart(); pop(); } },
+        { text: 'OK', onPress: () => { clearCart(); dismiss(); } },
       ],
       { cancelable: false },
     );
@@ -90,7 +90,7 @@ class CartScreen extends Component {
   render() {
     const {
       cart,
-      navigation: { navigate, goBack },
+      navigation: { navigate },
       screenProps: { dismiss },
     } = this.props;
 
@@ -128,9 +128,11 @@ class CartScreen extends Component {
             },
           }}
           rightComponent={
-            <TouchableOpacity onPress={this.showClearCartAlert}>
-              <Text> Clear Cart</Text>
-            </TouchableOpacity>
+            Object.keys(this.props.cart).length > 0 ? (
+              <TouchableOpacity onPress={this.showClearCartAlert}>
+                <Text> Clear Cart</Text>
+              </TouchableOpacity>
+            ) : null
           }
         />
 
@@ -185,8 +187,10 @@ class CartScreen extends Component {
 
 CartScreen.propTypes = {
   navigation: PropTypes.shape({
-    pop: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  screenProps: PropTypes.shape({
+    dismiss: PropTypes.func.isRequired,
   }).isRequired,
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
