@@ -89,8 +89,9 @@ class CartScreen extends Component {
 
   render() {
     const {
-      navigation: { navigate, pop },
       cart,
+      navigation: { navigate, goBack },
+      screenProps: { dismiss },
     } = this.props;
 
     const { currencyConversion } = this.state;
@@ -110,7 +111,7 @@ class CartScreen extends Component {
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
-            <TouchableOpacity onPress={() => pop()}>
+            <TouchableOpacity onPress={() => dismiss()}>
               <Icon
                 color="#000"
                 name="close"
