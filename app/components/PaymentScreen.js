@@ -3,6 +3,7 @@ import { View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, Touchabl
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
+import { NavigationActions } from 'react-navigation';
 
 export default class PaymentScreen extends Component {
 
@@ -267,7 +268,11 @@ export default class PaymentScreen extends Component {
         
         <TouchableOpacity
           style = { styles.goBackContainer }
-          onPress= { () => this.props.navigation.navigate('pos') }
+          onPress= { () => {
+            // this.props.navigation.navigate('pos')
+            this.props.screenProps.dismiss()
+            
+          } }
         >
           <View style = { styles.goBackButton }>
             <Text style = { styles.goBackButtonText }> Go Back </Text>

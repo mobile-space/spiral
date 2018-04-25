@@ -117,7 +117,7 @@ class PosScreen extends Component {
             rightComponent={
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
-                onPress={() => navigate('cart')}
+                onPress={() => navigate('checkout')}
               >
                 <Icon
                   name="cart"

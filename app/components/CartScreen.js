@@ -25,13 +25,15 @@ class CartScreen extends Component {
   }
 
   componentDidMount() {
-    fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD')
-      .then(res => res.json())
-      .then((res) => {
-        /* eslint-disable react/no-did-mount-set-state */
-        this.setState({ currencyConversion: res });
-        /* eslint-enable react/no-did-mount-set-state */
-      });
+    if (Object.keys(this.props.cart).length > 0) {
+      fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD')
+        .then(res => res.json())
+        .then((res) => {
+          /* eslint-disable react/no-did-mount-set-state */
+          this.setState({ currencyConversion: res });
+          /* eslint-enable react/no-did-mount-set-state */
+        });
+    }
   }
 
   showClearCartAlert = () => {
@@ -94,9 +96,10 @@ class CartScreen extends Component {
     const { currencyConversion } = this.state;
 
     const total = this.calculateTotal(cart);
-    const totalInCrypto = currencyConversion && currencyConversion.BTC && currencyConversion.BTC.USD ? (
-      total / currencyConversion.BTC.USD
-    ) : null;
+    const totalInCrypto =
+      currencyConversion && currencyConversion.BTC && currencyConversion.BTC.USD ? (
+        total / currencyConversion.BTC.USD
+      ) : null;
 
     return (
       <View style={{ flex: 1 }}>
@@ -147,7 +150,7 @@ class CartScreen extends Component {
             <Text style={styles.totalAmount}>{total}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
 
-            {totalInCrypto &&
+            {totalInCrypto !== null &&
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.totalSeparator}>/</Text>
                 <Text style={styles.totalAmount}>
