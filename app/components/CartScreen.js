@@ -11,6 +11,7 @@ import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo';
+import Swipeout from 'react-native-swipeout';
 
 import CartItem from './common/CartItem';
 
@@ -37,14 +38,24 @@ class CartScreen extends Component {
   }
 
   renderCartItem = (product) => {
-    const { addOneToCart, removeOneFromCart } = this.props;
+    const { addOneToCart, removeOneFromCart, removeFromCart } = this.props;
+    const swipeoutButtons = [
+      {
+        autoClose: true,
+        onPress: () => removeFromCart(product),
+        text: 'Delete',
+        type: 'delete',
+      },
+    ];
 
     return (
-      <CartItem
-        product={product}
-        onMinusPressed={() => removeOneFromCart(product)}
-        onPlusPressed={() => addOneToCart(product)}
-      />
+      <Swipeout right={swipeoutButtons}>
+        <CartItem
+          product={product}
+          onMinusPressed={() => removeOneFromCart(product)}
+          onPlusPressed={() => addOneToCart(product)}
+        />
+      </Swipeout>
     );
   };
 
@@ -92,40 +103,39 @@ class CartScreen extends Component {
           renderItem={({ item }) => this.renderCartItem(item)}
         />
 
-
-
-       <LinearGradient
-        colors={['#000000', '#323232']}
-        start={{ x: 0.0, y: 0.0 }}
-        end={{ x: 1.0, y: 1.0 }}
-        locations={[0.2, 0.8]}
-      >
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: </Text>
-          <Text style={styles.totalAmount}>
-            {
-              Object.keys(cart).reduce((accumulator, key) => {
-                const {
-                  quantity,
-                  price: { local_currency: unitPrice },
-                } = cart[key];
-
-                const total = accumulator + (quantity * unitPrice);
-                return +(`${Math.round(`${total}e+2`)}e-2`);
-              }, 0)
-            }
-          </Text>
-          <Text style={styles.totalCurrency}>USD</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.checkoutButtonContainer}
-          onPress={() => navigate('payment')}
+        <LinearGradient
+          colors={['#000000', '#323232']}
+          start={{ x: 0.0, y: 0.0 }}
+          end={{ x: 1.0, y: 1.0 }}
+          locations={[0.2, 0.8]}
         >
-          <View style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>Checkout</Text>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalText}>Total: </Text>
+            <Text style={styles.totalAmount}>
+              {
+                Object.keys(cart).reduce((accumulator, key) => {
+                  const {
+                    quantity,
+                    price: { local_currency: unitPrice },
+                  } = cart[key];
+
+                  const total = accumulator + (quantity * unitPrice);
+                  return +(`${Math.round(`${total}e+2`)}e-2`);
+                }, 0)
+              }
+            </Text>
+            <Text style={styles.totalCurrency}>USD</Text>
           </View>
-        </TouchableOpacity>
-      </LinearGradient>
+
+          <TouchableOpacity
+            style={styles.checkoutButtonContainer}
+            onPress={() => navigate('payment')}
+          >
+            <View style={styles.checkoutButton}>
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
+            </View>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     );
   }
@@ -139,6 +149,7 @@ CartScreen.propTypes = {
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
   removeOneFromCart: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
   clearCart: PropTypes.func.isRequired,
 };
 
@@ -161,18 +172,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 8,
     fontWeight: 'bold',
-    color: '#fff'
+    color: '#fff',
   },
   totalAmount: {
     fontSize: 18,
     fontStyle: 'italic',
     marginRight: 8,
-    color: '#fff'
+    color: '#fff',
   },
   totalCurrency: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff' 
+    color: '#fff',
   },
   checkoutContainer: {
   },
@@ -204,6 +215,7 @@ export default (() => {
   const {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
   } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
@@ -211,6 +223,7 @@ export default (() => {
   const mapDispatchToProps = {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
   };
 
