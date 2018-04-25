@@ -66,7 +66,7 @@ export default TabNavigator({
   market: {
     screen: MarketScreen,
     navigationOptions: {
-      tabBarLabel: 'Market',
+      tabBarLabel:  'Market',
       tabBarIcon: MarketScreenTabIcon,
     },
   },
@@ -99,7 +99,7 @@ export default TabNavigator({
   swipeEnabled: Platform.OS !== 'ios',
   tabBarOptions: {
     showIcon: true,
-    showLabel: true,
+    showLabel: Platform.OS === 'ios',
     activeTintColor: '#FFF',
     inactiveTintColor: '#AAA',
     style: {
