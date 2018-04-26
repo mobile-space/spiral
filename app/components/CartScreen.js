@@ -16,6 +16,8 @@ import Swipeout from 'react-native-swipeout';
 import CartItem from './common/CartItem';
 import CategoryButton from './common/CategoryButton';
 
+const ACCEPTED_CRYPTO_CURRENCIES = ['BTC', 'ETH', 'DASH', 'LTC'];
+
 class CartScreen extends Component {
   static navigationOptions = {
     headerMode: 'none',
@@ -28,7 +30,7 @@ class CartScreen extends Component {
 
   componentDidMount() {
     if (Object.keys(this.props.cart).length > 0) {
-      fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP,LTC&tsyms=BTC,USD')
+      fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,DASH,ETH,LTC&tsyms=BTC,USD')
         .then(res => res.json())
         .then((res) => {
           /* eslint-disable react/no-did-mount-set-state */
@@ -79,7 +81,10 @@ class CartScreen extends Component {
     ];
 
     return (
-      <Swipeout right={swipeoutButtons}>
+      <Swipeout
+        right={swipeoutButtons}
+        style={{ backgroundColor: 'rgba(0,0,0,0)' }}
+      >
         <CartItem
           product={product}
           onMinusPressed={() => removeOneFromCart(product)}
@@ -151,14 +156,8 @@ class CartScreen extends Component {
           locations={[0.2, 0.8]}
         >
           {
-            <View style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 16,
-              marginBottom: 16,
-            }}>
-              {['BTC', 'ETH', 'DASH', 'LTC'].map(category => (
+            <View style={styles.cryptoCurrenciesSelector}>
+              {ACCEPTED_CRYPTO_CURRENCIES.map(category => (
                 <CategoryButton
                   key={category}
                   style={styles.category}
@@ -225,6 +224,13 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  cryptoCurrenciesSelector: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginBottom: 16,
   },
   totalContainer: {
     flexDirection: 'row',
