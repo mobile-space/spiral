@@ -96,7 +96,7 @@ class MarketScreen extends Component {
 
   renderLeftMarketHeader = () => {
     return (
-        <Text style = {styles.headerText}> ₿ Market </Text>
+        <Text style = {styles.headerText}> Market </Text>
     );
   }
 
@@ -123,7 +123,7 @@ class MarketScreen extends Component {
 
       <View style = {{flex: 1,backgroundColor: 'transparent' }} >
         <FlatList style={{marginTop: 15}}
-          keyExtractor={(item, transaction) => transaction}
+          keyExtractor={(item, index) => `${index}`}
           data={market}
           extraData = {this.state}
           renderItem={({ item }) => this._renderList({ item })}

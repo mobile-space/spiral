@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   container: {
     borderColor: '#006600',
     borderWidth: 1,
-    borderRadius: 10,
+    // borderRadius: 10,
   },
   row: {
     alignItems: 'center',
