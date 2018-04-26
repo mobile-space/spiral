@@ -135,14 +135,13 @@ class PaymentScreen extends Component {
       toValue: 1,
       duration: 5000,
       easing: Easing.linear,
-    }).start();
+    }).start(() => this.setState({ progress: new Animated.Value(0) }));
 
     return(
       <View style = { styles.pendingTransaction }>
         <LottieView
           source= { require('../../assets/lottie/loading_loop_white.json' ) } 
           progress = { this.state.progress }
-          loop = {true}
         />
       </View>
     )
