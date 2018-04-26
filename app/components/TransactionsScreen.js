@@ -106,7 +106,7 @@ class TransactionsScreen extends Component {
           <View>
             <Text style = { styles.timeStampDateText }> { transaction.timeStamp_date} </Text>
           </View>
-          <View style ={{justifyContent: 'center', alignItems: 'right'}}>
+          <View style ={{justifyContent: 'center', alignItems: 'flex-start'}}>
             <Text style = { styles.timeStampTimeText }> { transaction.timeStamp_time} </Text>            
           </View>
         </View>
