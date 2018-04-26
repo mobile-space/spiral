@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
+import { Alert, View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
@@ -21,6 +21,7 @@ class PaymentScreen extends Component {
       coin: null,
       progress: new Animated.Value(0),
       transactionStatus: null,
+      timer: null,
     }
     this.checkTransactionStatus = this.checkTransactionStatus.bind(this);
 
@@ -28,11 +29,26 @@ class PaymentScreen extends Component {
   }
 
   componentDidMount = async () => {
-    this.createTransaction();
+    await this.createTransaction();
+
+    const timer = setInterval(this.showConfirmationDialog, 15000);
+    this.setState({ timer });
   }
 
   componentWillUnmount() {
     clearInterval(this.state.interval);
+    clearInterval(this.state.timer);
+  }
+
+  showConfirmationDialog = () => {
+    Alert.alert(
+      'Transaction Confirmed',
+      'Transaction ID: f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16',
+      [
+        { text: 'OK', onPress: () => {} },
+      ],
+      { cancelable: false },
+    );
   }
 
   checkTransactionStatus = async (status) => {
