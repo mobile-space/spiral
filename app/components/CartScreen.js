@@ -11,6 +11,7 @@ import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo';
+import Swipeout from 'react-native-swipeout';
 
 import CartItem from './common/CartItem';
 
@@ -19,10 +20,26 @@ class CartScreen extends Component {
     headerMode: 'none',
   }
 
+  state = {
+    currencyConversion: null,
+  }
+
+  componentDidMount() {
+    if (Object.keys(this.props.cart).length > 0) {
+      fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,DASH,BCH,XMR,ZEC,MKR,NEO,BCP,XRP&tsyms=BTC,USD')
+        .then(res => res.json())
+        .then((res) => {
+          /* eslint-disable react/no-did-mount-set-state */
+          this.setState({ currencyConversion: res });
+          /* eslint-enable react/no-did-mount-set-state */
+        });
+    }
+  }
+
   showClearCartAlert = () => {
     const {
-      navigation: { pop },
       clearCart,
+      screenProps: { dismiss },
     } = this.props;
 
     Alert.alert(
@@ -30,30 +47,61 @@ class CartScreen extends Component {
       'Are you sure you want to clear the cart? This cannot be undone.',
       [
         { text: 'No' },
-        { text: 'OK', onPress: () => { clearCart(); pop(); } },
+        { text: 'OK', onPress: () => { clearCart(); dismiss(); } },
       ],
       { cancelable: false },
     );
   }
 
+  calculateTotal = cart => (
+    Object.keys(cart).reduce((accumulator, key) => {
+      const {
+        quantity,
+        price: { local_currency: unitPrice },
+      } = cart[key];
+
+      const total = accumulator + (quantity * unitPrice);
+      return +(`${Math.round(`${total}e+2`)}e-2`);
+    }, 0)
+  );
+
   renderCartItem = (product) => {
-    const { addOneToCart, removeOneFromCart } = this.props;
+    const { addOneToCart, removeOneFromCart, removeFromCart } = this.props;
+    const swipeoutButtons = [
+      {
+        autoClose: true,
+        onPress: () => removeFromCart(product),
+        text: 'Delete',
+        type: 'delete',
+      },
+    ];
 
     return (
-      <CartItem
-        product={product}
-        onMinusPressed={() => removeOneFromCart(product)}
-        onPlusPressed={() => addOneToCart(product)}
-      />
+      <Swipeout right={swipeoutButtons}>
+        <CartItem
+          product={product}
+          onMinusPressed={() => removeOneFromCart(product)}
+          onPlusPressed={() => addOneToCart(product)}
+        />
+      </Swipeout>
     );
   };
 
   render() {
     const {
-      navigation: { navigate, pop },
       cart,
+      navigation: { navigate },
+      screenProps: { dismiss },
     } = this.props;
-    
+
+    const { currencyConversion } = this.state;
+
+    const total = this.calculateTotal(cart);
+    const totalInCrypto =
+      currencyConversion && currencyConversion.BTC && currencyConversion.BTC.USD ? (
+        total / currencyConversion.BTC.USD
+      ) : null;
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -63,7 +111,7 @@ class CartScreen extends Component {
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
-            <TouchableOpacity onPress={() => pop()}>
+            <TouchableOpacity onPress={() => dismiss()}>
               <Icon
                 color="#000"
                 name="close"
@@ -80,9 +128,11 @@ class CartScreen extends Component {
             },
           }}
           rightComponent={
-            <TouchableOpacity onPress={this.showClearCartAlert}>
-              <Text> Clear Cart</Text>
-            </TouchableOpacity>
+            Object.keys(this.props.cart).length > 0 ? (
+              <TouchableOpacity onPress={this.showClearCartAlert}>
+                <Text> Clear Cart</Text>
+              </TouchableOpacity>
+            ) : null
           }
         />
 
@@ -92,40 +142,44 @@ class CartScreen extends Component {
           renderItem={({ item }) => this.renderCartItem(item)}
         />
 
-
-
-       <LinearGradient
-        colors={['#000000', '#323232']}
-        start={{ x: 0.0, y: 0.0 }}
-        end={{ x: 1.0, y: 1.0 }}
-        locations={[0.2, 0.8]}
-      >
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: </Text>
-          <Text style={styles.totalAmount}>
-            {
-              Object.keys(cart).reduce((accumulator, key) => {
-                const {
-                  quantity,
-                  price: { local_currency: unitPrice },
-                } = cart[key];
-
-                const total = accumulator + (quantity * unitPrice);
-                return +(`${Math.round(`${total}e+2`)}e-2`);
-              }, 0)
-            }
-          </Text>
-          <Text style={styles.totalCurrency}>USD</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.checkoutButtonContainer}
-          onPress={() => navigate('payment')}
+        <LinearGradient
+          colors={['#000000', '#323232']}
+          start={{ x: 0.0, y: 0.0 }}
+          end={{ x: 1.0, y: 1.0 }}
+          locations={[0.2, 0.8]}
         >
-          <View style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>Checkout</Text>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalText}>Total: </Text>
+            <Text style={styles.totalAmount}>{total}</Text>
+            <Text style={styles.totalCurrency}>USD</Text>
+
+            {totalInCrypto !== null &&
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.totalSeparator}>/</Text>
+                <Text style={styles.totalAmount}>
+                  {
+                    totalInCrypto >= 1 ? (
+                      Number.parseFloat(total / currencyConversion.BTC.USD).toPrecision(4)
+                    ) : (
+                      Number.parseFloat(total / currencyConversion.BTC.USD).toPrecision(2)
+                    )
+                  }
+                </Text>
+                <Text style={styles.totalCurrency}>BTC</Text>
+              </View>
+            }
           </View>
-        </TouchableOpacity>
-      </LinearGradient>
+
+          <TouchableOpacity
+            disabled={!total}
+            onPress={() => total && navigate('payment')}
+            style={styles.checkoutButtonContainer}
+          >
+            <View style={styles.checkoutButton}>
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
+            </View>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     );
   }
@@ -133,12 +187,15 @@ class CartScreen extends Component {
 
 CartScreen.propTypes = {
   navigation: PropTypes.shape({
-    pop: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  screenProps: PropTypes.shape({
+    dismiss: PropTypes.func.isRequired,
   }).isRequired,
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
   removeOneFromCart: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
   clearCart: PropTypes.func.isRequired,
 };
 
@@ -148,7 +205,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   totalContainer: {
-
     flexDirection: 'row',
     height: 24,
     marginBottom: 16,
@@ -161,20 +217,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 8,
     fontWeight: 'bold',
-    color: '#fff'
+    color: '#fff',
   },
   totalAmount: {
     fontSize: 18,
     fontStyle: 'italic',
     marginRight: 8,
-    color: '#fff'
+    color: '#fff',
   },
   totalCurrency: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff' 
+    color: '#fff',
   },
-  checkoutContainer: {
+  totalSeparator: {
+    color: '#fff',
+    fontSize: 18,
+    marginLeft: 4,
+    marginRight: 4,
   },
   checkoutButtonContainer: {
     backgroundColor: '#006600',
@@ -204,6 +264,7 @@ export default (() => {
   const {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
   } = require('../actions/cart_actions');
   /* eslint-enable global-require  */
@@ -211,9 +272,9 @@ export default (() => {
   const mapDispatchToProps = {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);
 })();
-
