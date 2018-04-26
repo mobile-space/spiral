@@ -63,6 +63,13 @@ class MarketScreen extends Component {
   }
 
   _renderList = ({ item: coin }) => {
+    // Add thousand separator
+    const amountParts =
+      (this.state.active === 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2))
+        .toString().split('.');
+    amountParts[0] = amountParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const amount = amountParts.join('.');
+
     return (
       <View style={styles.listContainer}>
           <View style={styles.nameCointaner} >
@@ -74,7 +81,7 @@ class MarketScreen extends Component {
           </View>
           <View style={styles.priceBox}>
             <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
-              {this.state.active == 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2)}
+              {amount}
             </Text>
           </View>
         </View>

@@ -7,9 +7,9 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import PosStack from './PosStack';
 import MarketScreen from '../components/MarketScreen';
 import TransactionsScreen from '../components/TransactionsScreen';
-import SettingsScreen from '../components/SettingsScreen';
-import PaymentScreen from '../components/PaymentScreen';
-import ConvertScreen from '../components/ConvertScreen';
+// import SettingsScreen from '../components/SettingsScreen';
+// import PaymentScreen from '../components/PaymentScreen';
+// import ConvertScreen from '../components/ConvertScreen';
 
 const PosScreenTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
@@ -44,16 +44,16 @@ TransactionsScreenTabIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
 };
 
-const SettingsScreenTabIcon = ({ tintColor }) => (
-  <SimpleLineIcons
-    name="settings"
-    color={tintColor}
-    size={Platform.OS === 'ios' ? 22 : 25}
-  />
-);
-SettingsScreenTabIcon.propTypes = {
-  tintColor: PropTypes.string.isRequired,
-};
+// const SettingsScreenTabIcon = ({ tintColor }) => (
+//   <SimpleLineIcons
+//     name="settings"
+//     color={tintColor}
+//     size={Platform.OS === 'ios' ? 22 : 25}
+//   />
+// );
+// SettingsScreenTabIcon.propTypes = {
+//   tintColor: PropTypes.string.isRequired,
+// };
 
 export default TabNavigator({
   pos: {
@@ -77,21 +77,20 @@ export default TabNavigator({
       tabBarIcon: TransactionsScreenTabIcon,
     },
   },
-  settings: {
-    screen: PaymentScreen,
-    navigationOptions: {
-      tabBarLabel: 'Settings',
-      tabBarIcon: SettingsScreenTabIcon,
-    },
-  },
-  convert: {
-    screen: ConvertScreen,
-    navigationOptions: {
-      tabBarLabel: 'Convert',
-      tabBarIcon: SettingsScreenTabIcon,
-    },
-  },
-
+  // settings: {
+  //   screen: PaymentScreen,
+  //   navigationOptions: {
+  //     tabBarLabel: 'Settings',
+  //     tabBarIcon: SettingsScreenTabIcon,
+  //   },
+  // },
+  // convert: {
+  //   screen: ConvertScreen,
+  //   navigationOptions: {
+  //     tabBarLabel: 'Convert',
+  //     tabBarIcon: SettingsScreenTabIcon,
+  //   },
+  // },
 }, {
   initialRouteName: 'pos',
   tabBarPosition: 'bottom',

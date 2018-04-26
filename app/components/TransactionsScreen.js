@@ -94,6 +94,11 @@ class TransactionsScreen extends Component {
   }
 
   _renderTransaction = ({ item: transaction }) => {
+    // Add thousand separator
+    const amountParts = transaction.amountf.toString().split('.');
+    amountParts[0] = amountParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const amount = amountParts.join('.');
+
     return (
       <View style={ styles.transactionContainer }>
         <View style={ styles.timeStampContainer }>
@@ -101,7 +106,7 @@ class TransactionsScreen extends Component {
         </View>
 
         <View style={ styles.amountCountainer }>
-          <Text style={ styles.amountText }> { transaction.coin } { transaction.amountf } </Text>
+          <Text style={ styles.amountText }> { transaction.coin } { amount } </Text>
         </View>
       </View>
     );
