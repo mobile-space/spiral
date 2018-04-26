@@ -124,10 +124,10 @@ class CartScreen extends Component {
 
     const { currencyConversion, currency } = this.state;
 
-    const total = this.calculateTotal(cart);
+    const totalInLocalCurrency = this.calculateTotal(cart);
     const totalInCrypto =
       currencyConversion && currencyConversion[currency] && currencyConversion[currency].USD ? (
-        total / currencyConversion[currency].USD
+        totalInLocalCurrency / currencyConversion[currency].USD
       ) : null;
 
     return (
@@ -176,7 +176,7 @@ class CartScreen extends Component {
           end={{ x: 1.0, y: 1.0 }}
           locations={[0.2, 0.8]}
         >
-          {total &&
+          {totalInLocalCurrency &&
             <View style={styles.cryptoCurrenciesSelector}>
               {ACCEPTED_CRYPTO_CURRENCIES.map(category => (
                 <CategoryButton
@@ -192,7 +192,7 @@ class CartScreen extends Component {
 
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>Total: </Text>
-            <Text style={styles.totalAmount}>{total.toFixed(2)}</Text>
+            <Text style={styles.totalAmount}>{totalInLocalCurrency.toFixed(2)}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
 
             {totalInCrypto !== null &&
@@ -201,9 +201,11 @@ class CartScreen extends Component {
                 <Text style={styles.totalAmount}>
                   {
                     totalInCrypto >= 1 ? (
-                      (total / currencyConversion[currency].USD).toFixed(2)
+                      (totalInLocalCurrency / currencyConversion[currency].USD).toFixed(2)
                     ) : (
-                      Number.parseFloat(total / currencyConversion[currency].USD).toPrecision(2)
+                      Number
+                        .parseFloat(totalInLocalCurrency / currencyConversion[currency].USD)
+                        .toPrecision(2)
                     )
                   }
                 </Text>
@@ -219,7 +221,7 @@ class CartScreen extends Component {
           >
             <View style={styles.checkoutButton}>
               {
-                totalInCrypto === null ? (
+                totalInLocalCurrency && !totalInCrypto ? (
                   <ActivityIndicator
                     size="small"
                     color="#FFF"
