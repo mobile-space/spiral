@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   TouchableOpacity,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -28,6 +29,10 @@ class CartScreen extends Component {
     currency: 'BTC',
   }
 
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true);
+  }
+
   componentDidMount() {
     if (Object.keys(this.props.cart).length > 0) {
       fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,DASH,ETH,LTC&tsyms=BTC,USD')
@@ -38,6 +43,10 @@ class CartScreen extends Component {
           /* eslint-enable react/no-did-mount-set-state */
         });
     }
+  }
+
+  componentWillUnmount() {
+    StatusBar.setBarStyle('light-content', true);
   }
 
   showClearCartAlert = () => {
@@ -155,7 +164,7 @@ class CartScreen extends Component {
           end={{ x: 1.0, y: 1.0 }}
           locations={[0.2, 0.8]}
         >
-          {
+          {total &&
             <View style={styles.cryptoCurrenciesSelector}>
               {ACCEPTED_CRYPTO_CURRENCIES.map(category => (
                 <CategoryButton
@@ -171,7 +180,7 @@ class CartScreen extends Component {
 
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>Total: </Text>
-            <Text style={styles.totalAmount}>{total}</Text>
+            <Text style={styles.totalAmount}>{total.toFixed(2)}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
 
             {totalInCrypto !== null &&
@@ -180,7 +189,7 @@ class CartScreen extends Component {
                 <Text style={styles.totalAmount}>
                   {
                     totalInCrypto >= 1 ? (
-                      Number.parseFloat(total / currencyConversion[currency].USD).toPrecision(4)
+                      (total / currencyConversion[currency].USD).toFixed(2)
                     ) : (
                       Number.parseFloat(total / currencyConversion[currency].USD).toPrecision(2)
                     )
