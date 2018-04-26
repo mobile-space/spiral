@@ -7,9 +7,8 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import PosStack from './PosStack';
 import MarketScreen from '../components/MarketScreen';
 import TransactionsScreen from '../components/TransactionsScreen';
-// import SettingsScreen from '../components/SettingsScreen';
-// import PaymentScreen from '../components/PaymentScreen';
-// import ConvertScreen from '../components/ConvertScreen';
+import WalletScreen from '../utils/WalletScreen';
+import { Icon } from 'react-native-elements';
 
 const PosScreenTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
@@ -34,26 +33,27 @@ MarketScreenTabIcon.propTypes = {
 };
 
 const TransactionsScreenTabIcon = ({ tintColor }) => (
-  <SimpleLineIcons
+  <Icon
     name="wallet"
     color={tintColor}
     size={Platform.OS === 'ios' ? 22 : 25}
+    type="material-community"
   />
 );
 TransactionsScreenTabIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
 };
 
-// const SettingsScreenTabIcon = ({ tintColor }) => (
-//   <SimpleLineIcons
-//     name="settings"
-//     color={tintColor}
-//     size={Platform.OS === 'ios' ? 22 : 25}
-//   />
-// );
-// SettingsScreenTabIcon.propTypes = {
-//   tintColor: PropTypes.string.isRequired,
-// };
+const WalletTabIcon = ({ tintColor }) => (
+  <SimpleLineIcons
+    name="wallet"
+    color={tintColor}
+    size={Platform.OS === 'ios' ? 22 : 25}
+  />
+);
+WalletTabIcon.propTypes = {
+  tintColor: PropTypes.string.isRequired,
+};
 
 export default TabNavigator({
   pos: {
@@ -77,20 +77,13 @@ export default TabNavigator({
       tabBarIcon: TransactionsScreenTabIcon,
     },
   },
-  // settings: {
-  //   screen: PaymentScreen,
-  //   navigationOptions: {
-  //     tabBarLabel: 'Settings',
-  //     tabBarIcon: SettingsScreenTabIcon,
-  //   },
-  // },
-  // convert: {
-  //   screen: ConvertScreen,
-  //   navigationOptions: {
-  //     tabBarLabel: 'Convert',
-  //     tabBarIcon: SettingsScreenTabIcon,
-  //   },
-  // },
+  settings: {
+    screen: WalletScreen,
+    navigationOptions: {
+      tabBarLabel: 'Wallet',
+      tabBarIcon: WalletTabIcon,
+    },
+  },
 }, {
   initialRouteName: 'pos',
   tabBarPosition: 'bottom',
