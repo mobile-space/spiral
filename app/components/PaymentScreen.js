@@ -23,6 +23,8 @@ class PaymentScreen extends Component {
       transactionStatus: null,
     }
     this.checkTransactionStatus = this.checkTransactionStatus.bind(this);
+
+    this.progress = new Animated.Value(0);
   }
 
   componentDidMount = async () => {
@@ -131,20 +133,18 @@ class PaymentScreen extends Component {
   }
  
   renderTransactionPendingIndicator = () => {
-    Animated.timing(this.state.progress, {
-      toValue: 1,
-      duration: 5000,
-      easing: Easing.linear,
-    }).start(() => this.setState({ progress: new Animated.Value(0) }));
-
-    return(
-      <View style = { styles.pendingTransaction }>
+    return (
+      <View style={styles.pendingTransaction}>
         <LottieView
-          source= { require('../../assets/lottie/loading_loop_white.json' ) } 
-          progress = { this.state.progress }
+          source={require('../../assets/lottie/loading_loop_white.json')} 
+          speed={0.3}
+          ref={(animation) => {
+            this.animation = animation;
+            this.animation.play();
+          }}
         />
       </View>
-    )
+    );
   }
 
   renderLoadingTransactionIndicator = () => {
@@ -160,7 +160,6 @@ class PaymentScreen extends Component {
         <LottieView
           source = { require('../../assets/lottie/snap_loader_white.json' ) } 
           progress = { this.state.progress }
-          loop = { true } 
         />
       </View>
     )
