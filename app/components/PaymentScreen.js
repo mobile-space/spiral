@@ -140,7 +140,10 @@ class PaymentScreen extends Component {
           speed={0.3}
           ref={(animation) => {
             this.animation = animation;
-            this.animation.play();
+
+            if (this.animation) {
+              this.animation.play();
+            }
           }}
         />
       </View>
