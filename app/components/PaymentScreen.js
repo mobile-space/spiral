@@ -3,15 +3,15 @@ import { View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, Touchabl
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
-import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
 
-export default class PaymentScreen extends Component {
+class PaymentScreen extends Component {
 
   static NavigationOptions = {
 
   }
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       isTransactionFinishedLoading: false,
@@ -46,12 +46,11 @@ export default class PaymentScreen extends Component {
   } 
 
   paymentStatusCallBack = () => {
-
-  const { transaction } = this.state;
-  var responseJSON = null;
-  var self = this;
-    
-  var interval = setInterval(async function() {
+    const { transaction } = this.state;
+    var responseJSON = null;
+    var self = this;
+      
+    var interval = setInterval(async function() {
 
       var details = { };
       details.transactionID = transaction.txn_id
@@ -174,7 +173,10 @@ export default class PaymentScreen extends Component {
   }
 
   render() {
-    const { navigation: { goBack } } = this.props 
+    const {
+      payment: { amount, currency },
+      navigation: { goBack },
+    } = this.props 
     const { transaction, isTransactionFinishedLoading, isTransactionPending } = this.state
     const qrDimension = Dimensions.get( 'window' ).width * 0.5
 
@@ -235,7 +237,7 @@ export default class PaymentScreen extends Component {
                 </View>
 
                 <View style = { styles.amountTransactionContainer }>
-                  <Text style = { styles.amountTransactionText }> { transaction.amount} BTC</Text>
+                  <Text style = { styles.amountTransactionText }> {amount} {currency}</Text>
                 </View>
 
               </View>
@@ -409,3 +411,11 @@ const styles = StyleSheet.create({
     height: Dimensions.get( 'window' ).width * 0.5,
   }
 });
+
+export default (() => {
+  const mapStateToProps = state => ({
+    payment: state.payment,
+  });
+
+  return connect(mapStateToProps)(PaymentScreen);
+})();

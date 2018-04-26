@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   TouchableOpacity,
@@ -49,6 +50,30 @@ class CartScreen extends Component {
     StatusBar.setBarStyle('light-content', true);
   }
 
+  onCheckoutPressed = (amount, currency) => {
+    if (!amount || !currency) return;
+
+    const {
+      goToPayment,
+      navigation: { navigate },
+    } = this.props;
+
+    goToPayment({ amount, currency });
+    navigate('payment');
+  }
+
+  calculateTotal = cart => (
+    Object.keys(cart).reduce((accumulator, key) => {
+      const {
+        quantity,
+        price: { local_currency: unitPrice },
+      } = cart[key];
+  
+      const total = accumulator + (quantity * unitPrice);
+      return +(`${Math.round(`${total}e+2`)}e-2`);
+    }, 0)
+  );
+
   showClearCartAlert = () => {
     const {
       clearCart,
@@ -65,18 +90,6 @@ class CartScreen extends Component {
       { cancelable: false },
     );
   }
-
-  calculateTotal = cart => (
-    Object.keys(cart).reduce((accumulator, key) => {
-      const {
-        quantity,
-        price: { local_currency: unitPrice },
-      } = cart[key];
-
-      const total = accumulator + (quantity * unitPrice);
-      return +(`${Math.round(`${total}e+2`)}e-2`);
-    }, 0)
-  );
 
   renderCartItem = (product) => {
     const { addOneToCart, removeOneFromCart, removeFromCart } = this.props;
@@ -106,7 +119,6 @@ class CartScreen extends Component {
   render() {
     const {
       cart,
-      navigation: { navigate },
       screenProps: { dismiss },
     } = this.props;
 
@@ -201,12 +213,21 @@ class CartScreen extends Component {
           </View>
           
           <TouchableOpacity
-            disabled={!total}
-            onPress={() => total && navigate('payment')}
+            disabled={!totalInCrypto}
+            onPress={() => this.onCheckoutPressed(totalInCrypto, currency)}
             style={styles.checkoutButtonContainer}
           >
             <View style={styles.checkoutButton}>
-              <Text style={styles.checkoutButtonText}>Checkout</Text>
+              {
+                totalInCrypto === null ? (
+                  <ActivityIndicator
+                    size="small"
+                    color="#FFF"
+                  />
+                ) : (
+                  <Text style={styles.checkoutButtonText}>Checkout</Text>
+                )
+              }
             </View>
           </TouchableOpacity>
         </LinearGradient>
@@ -227,6 +248,7 @@ CartScreen.propTypes = {
   removeOneFromCart: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   clearCart: PropTypes.func.isRequired,
+  goToPayment: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -308,6 +330,9 @@ export default (() => {
     removeFromCart,
     clearCart,
   } = require('../actions/cart_actions');
+  const {
+    goToPayment,
+  } = require('../actions/payment_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
@@ -315,6 +340,7 @@ export default (() => {
     removeOneFromCart,
     removeFromCart,
     clearCart,
+    goToPayment,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);
