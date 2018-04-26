@@ -69,9 +69,10 @@ class TransactionsScreen extends Component {
       const status = transaction.status;
       var date = new Date(transaction.time_created * 1000);
 
-      timeStamp = date.getDate() + '/' + (date.getMonth()) + '/' + date.getFullYear() + " " + date.getHours() + ':' + date.getMinutes();
-
-      transaction.timeStamp = timeStamp;
+      timeStamp_date = (date.getMonth()) + '/' + date.getDate() + '/' + date.getFullYear();
+      timeStamp_time = date.getHours() + ':' + date.getMinutes();
+      transaction.timeStamp_date = timeStamp_date;
+      transaction.timeStamp_time = timeStamp_time;
       
       if (status == 100 || status == 0 || status == -1) {
         filteredTransactions.push(transaction);
@@ -96,7 +97,12 @@ class TransactionsScreen extends Component {
     return (
       <View style={ styles.transactionContainer }>
         <View style={ styles.timeStampContainer }>
-          <Text style = { styles.timeStampText }> { transaction.timeStamp } </Text>
+          <View>
+            <Text style = { styles.timeStampDateText }> { transaction.timeStamp_date} </Text>
+          </View>
+          <View style ={{justifyContent: 'center', alignItems: 'right'}}>
+            <Text style = { styles.timeStampTimeText }> { transaction.timeStamp_time} </Text>            
+          </View>
         </View>
 
         <View style={ styles.amountCountainer }>
@@ -151,7 +157,7 @@ class TransactionsScreen extends Component {
           {isFinishedLoadingTransactions &&
             <SectionList 
               renderItem={( {item} ) => this._renderTransaction({item})} 
-              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginLeft: 15, paddingTop: 10, borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)'}}>{title}</Text>}              
+              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: '#ccbadc', fontSize: 20, marginLeft: 15, paddingTop: 10, borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)'}}>{title}</Text>}              
               sections={this.getSectionsData()} 
               keyExtractor={(item, index) => item + index} />
             }
@@ -209,10 +215,17 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
 
-  timeStampText: {
+  timeStampDateText: {
     padding: 5,
     color: '#FFF',
-    fontSize: 20
+    fontSize: 16
+  },
+
+  timeStampTimeText: {
+    padding: 5,
+    color: 'grey',
+    fontSize: 16,
+    fontStyle: 'italic'
   }
 });
 
