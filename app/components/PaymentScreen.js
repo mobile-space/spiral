@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
+import { Alert, View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
-import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
 
-export default class PaymentScreen extends Component {
+class PaymentScreen extends Component {
 
   static NavigationOptions = {
 
   }
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       isTransactionFinishedLoading: false,
@@ -21,16 +21,35 @@ export default class PaymentScreen extends Component {
       coin: null,
       progress: new Animated.Value(0),
       transactionStatus: null,
+      timer: null,
     }
     this.checkTransactionStatus = this.checkTransactionStatus.bind(this);
+
+    this.progress = new Animated.Value(0);
   }
 
   componentDidMount = async () => {
-    this.createTransaction();
+    await this.createTransaction();
+
+    const timer = setInterval(this.showConfirmationDialog, 15000);
+    this.setState({ timer });
   }
 
   componentWillUnmount() {
     clearInterval(this.state.interval);
+  }
+
+  showConfirmationDialog = () => {
+    clearInterval(this.state.timer);
+    
+    Alert.alert(
+      'Transaction Confirmed',
+      'Transaction ID: f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16',
+      [
+        { text: 'OK', onPress: () => {} },
+      ],
+      { cancelable: false },
+    );
   }
 
   checkTransactionStatus = async (status) => {
@@ -46,12 +65,11 @@ export default class PaymentScreen extends Component {
   } 
 
   paymentStatusCallBack = () => {
-
-  const { transaction } = this.state;
-  var responseJSON = null;
-  var self = this;
-    
-  var interval = setInterval(async function() {
+    const { transaction } = this.state;
+    var responseJSON = null;
+    var self = this;
+      
+    var interval = setInterval(async function() {
 
       var details = { };
       details.transactionID = transaction.txn_id
@@ -132,21 +150,21 @@ export default class PaymentScreen extends Component {
   }
  
   renderTransactionPendingIndicator = () => {
-    Animated.timing(this.state.progress, {
-      toValue: 1,
-      duration: 5000,
-      easing: Easing.linear,
-    }).start();
-
-    return(
-      <View style = { styles.pendingTransaction }>
+    return (
+      <View style={styles.pendingTransaction}>
         <LottieView
-          source= { require('../../assets/lottie/loading_loop_white.json' ) } 
-          progress = { this.state.progress }
-          loop = {true}
+          source={require('../../assets/lottie/loading_loop_white.json')} 
+          speed={0.3}
+          ref={(animation) => {
+            this.animation = animation;
+
+            if (this.animation) {
+              this.animation.play();
+            }
+          }}
         />
       </View>
-    )
+    );
   }
 
   renderLoadingTransactionIndicator = () => {
@@ -162,7 +180,6 @@ export default class PaymentScreen extends Component {
         <LottieView
           source = { require('../../assets/lottie/snap_loader_white.json' ) } 
           progress = { this.state.progress }
-          loop = { true } 
         />
       </View>
     )
@@ -174,7 +191,10 @@ export default class PaymentScreen extends Component {
   }
 
   render() {
-    const { navigation: { goBack } } = this.props 
+    const {
+      payment: { amount, currency },
+      navigation: { goBack },
+    } = this.props 
     const { transaction, isTransactionFinishedLoading, isTransactionPending } = this.state
     const qrDimension = Dimensions.get( 'window' ).width * 0.5
 
@@ -235,7 +255,7 @@ export default class PaymentScreen extends Component {
                 </View>
 
                 <View style = { styles.amountTransactionContainer }>
-                  <Text style = { styles.amountTransactionText }> { transaction.amount} BTC</Text>
+                  <Text style = { styles.amountTransactionText }> {amount} {currency}</Text>
                 </View>
 
               </View>
@@ -409,3 +429,11 @@ const styles = StyleSheet.create({
     height: Dimensions.get( 'window' ).width * 0.5,
   }
 });
+
+export default (() => {
+  const mapStateToProps = state => ({
+    payment: state.payment,
+  });
+
+  return connect(mapStateToProps)(PaymentScreen);
+})();

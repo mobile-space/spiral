@@ -63,6 +63,12 @@ class MarketScreen extends Component {
   }
 
   _renderList = ({ item: coin }) => {
+    // Add thousand separator
+    const amountParts =
+      (this.state.active === 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2))
+        .toString().split('.');
+    amountParts[0] = amountParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const amount = amountParts.join('.');
 
     return (
       <View style={styles.listContainer}>
@@ -75,7 +81,7 @@ class MarketScreen extends Component {
           </View>
           <View style={styles.priceBox}>
             <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
-              {this.state.active == 0 ? ((coin.BTC).toFixed(4)) : (coin.USD).toFixed(2)}
+              {amount}
             </Text>
           </View>
         </View>
@@ -96,7 +102,7 @@ class MarketScreen extends Component {
 
   renderLeftMarketHeader = () => {
     return (
-        <Text style = {styles.headerText}> ₿ Market </Text>
+        <Text style = {styles.headerText}> Market </Text>
     );
   }
 
@@ -123,7 +129,7 @@ class MarketScreen extends Component {
 
       <View style = {{flex: 1,backgroundColor: 'transparent' }} >
         <FlatList style={{marginTop: 15}}
-          keyExtractor={(item, transaction) => transaction}
+          keyExtractor={(item, index) => `${index}`}
           data={market}
           extraData = {this.state}
           renderItem={({ item }) => this._renderList({ item })}
@@ -157,7 +163,11 @@ class MarketScreen extends Component {
           rightComponent={this.renderMarketToggle()
           }
         />
-          { isFetchingMarket ? null : this.contentView() }
+          { isFetchingMarket ? (
+            <View style={{ marginTop: 36 }}>
+              <ActivityIndicator size="large" color="#FFF" />
+            </View>
+          ) : this.contentView() }
       </LinearGradient>
     );
   }

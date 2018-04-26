@@ -7,9 +7,8 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import PosStack from './PosStack';
 import MarketScreen from '../components/MarketScreen';
 import TransactionsScreen from '../components/TransactionsScreen';
-import SettingsScreen from '../components/SettingsScreen';
-import PaymentScreen from '../components/PaymentScreen';
-import ConvertScreen from '../components/ConvertScreen';
+import WalletScreen from '../utils/WalletScreen';
+import { Icon } from 'react-native-elements';
 
 const PosScreenTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
@@ -34,24 +33,25 @@ MarketScreenTabIcon.propTypes = {
 };
 
 const TransactionsScreenTabIcon = ({ tintColor }) => (
-  <SimpleLineIcons
+  <Icon
     name="wallet"
     color={tintColor}
     size={Platform.OS === 'ios' ? 22 : 25}
+    type="material-community"
   />
 );
 TransactionsScreenTabIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
 };
 
-const SettingsScreenTabIcon = ({ tintColor }) => (
+const WalletTabIcon = ({ tintColor }) => (
   <SimpleLineIcons
-    name="settings"
+    name="wallet"
     color={tintColor}
     size={Platform.OS === 'ios' ? 22 : 25}
   />
 );
-SettingsScreenTabIcon.propTypes = {
+WalletTabIcon.propTypes = {
   tintColor: PropTypes.string.isRequired,
 };
 
@@ -78,20 +78,12 @@ export default TabNavigator({
     },
   },
   settings: {
-    screen: PaymentScreen,
+    screen: WalletScreen,
     navigationOptions: {
-      tabBarLabel: 'Settings',
-      tabBarIcon: SettingsScreenTabIcon,
+      tabBarLabel: 'Wallet',
+      tabBarIcon: WalletTabIcon,
     },
   },
-  convert: {
-    screen: ConvertScreen,
-    navigationOptions: {
-      tabBarLabel: 'Convert',
-      tabBarIcon: SettingsScreenTabIcon,
-    },
-  },
-
 }, {
   initialRouteName: 'pos',
   tabBarPosition: 'bottom',
