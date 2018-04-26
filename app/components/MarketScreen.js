@@ -63,7 +63,6 @@ class MarketScreen extends Component {
   }
 
   _renderList = ({ item: coin }) => {
-
     return (
       <View style={styles.listContainer}>
           <View style={styles.nameCointaner} >
@@ -157,7 +156,11 @@ class MarketScreen extends Component {
           rightComponent={this.renderMarketToggle()
           }
         />
-          { isFetchingMarket ? null : this.contentView() }
+          { isFetchingMarket ? (
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ActivityIndicator size="large" color="#FFF" />
+            </View>
+          ) : this.contentView() }
       </LinearGradient>
     );
   }
