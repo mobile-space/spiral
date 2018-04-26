@@ -157,7 +157,7 @@ class MarketScreen extends Component {
           }
         />
           { isFetchingMarket ? (
-            <View style={{ flex: 1, justifyContent: 'center' }}>
+            <View style={{ marginTop: 36 }}>
               <ActivityIndicator size="large" color="#FFF" />
             </View>
           ) : this.contentView() }

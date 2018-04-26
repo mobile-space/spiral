@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   NativeModules,
   Platform,
   SafeAreaView,
@@ -148,13 +149,17 @@ class TransactionsScreen extends Component {
             <Text style={styles.balanceText}> Balance: 55 BTC </Text>
           </View>
 
-          {isFinishedLoadingTransactions &&
-            <SectionList 
+          {isFinishedLoadingTransactions ? (
+            <SectionList
               renderItem={( {item} ) => this._renderTransaction({item})} 
               renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginLeft: 15, paddingTop: 10, borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)'}}>{title}</Text>}              
               sections={this.getSectionsData()} 
               keyExtractor={(item, index) => item + index} />
-            }
+          ) : (
+            <View style={{ marginTop: 36 }}>
+              <ActivityIndicator size="large" color="#FFF" />
+            </View>
+          )}
         </ScrollView>
       </LinearGradient>
     );
