@@ -9,6 +9,7 @@ import { PropTypes } from 'prop-types';
 
 const CategoryButton = props => (
   <TouchableOpacity
+    activeOpacity={1}
     style={styles.button}
     onPress={props.onPress}
     isSelected={props.isSelected}

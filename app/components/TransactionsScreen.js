@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   NativeModules,
   Platform,
   SafeAreaView,
@@ -8,7 +9,8 @@ import {
   ScrollView,
   FlatList,
   View,
-  SectionList
+  SectionList,
+  Alert
 } from 'react-native';
 
 import { LinearGradient } from 'expo';
@@ -35,6 +37,7 @@ class TransactionsScreen extends Component {
   }
 
   fetchTransactions = async () => {
+
     try {
       let response = await fetch(`https://crypto-payment-processor.herokuapp.com/transactions`, {
         method: 'POST',
@@ -44,19 +47,14 @@ class TransactionsScreen extends Component {
       });
 
       var responseJSON = null;
-
       if (response.status === 200) {
         responseJSON = await response.json();
-
-        console.log(responseJSON)
-
         const transactions = this.filterTransactions(responseJSON);
 
         this.setState({
           isFinishedLoadingTransactions: true,
           transactions: transactions,
         })
-
       } else {
         console.log(response.status);
       }
@@ -70,7 +68,13 @@ class TransactionsScreen extends Component {
 
     transactions.forEach(transaction => {
       const status = transaction.status;
+      var date = new Date(transaction.time_created * 1000);
 
+      timeStamp_date = (date.getMonth()) + '/' + date.getDate() + '/' + date.getFullYear();
+      timeStamp_time = date.getHours() + ':' + date.getMinutes();
+      transaction.timeStamp_date = timeStamp_date;
+      transaction.timeStamp_time = timeStamp_time;
+      
       if (status == 100 || status == 0 || status == -1) {
         filteredTransactions.push(transaction);
       }
@@ -91,18 +95,24 @@ class TransactionsScreen extends Component {
   }
 
   _renderTransaction = ({ item: transaction }) => {
+    // Add thousand separator
+    const amountParts = transaction.amountf.toString().split('.');
+    amountParts[0] = amountParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const amount = amountParts.join('.');
 
     return (
-      <View style={[
-        styles.transactionContainer,
-        { backgroundColor: transaction.status == 100 ? 'green' : "rgba(217,56,239, 0.4)" }
-      ]}>
-        <View style={styles.coinContainer}>
-          <Text style={styles.coinText}>{transaction.coin}</Text>
+      <View style={ styles.transactionContainer }>
+        <View style={ styles.timeStampContainer }>
+          <View>
+            <Text style = { styles.timeStampDateText }> { transaction.timeStamp_date} </Text>
+          </View>
+          <View style ={{justifyContent: 'center', alignItems: 'right'}}>
+            <Text style = { styles.timeStampTimeText }> { transaction.timeStamp_time} </Text>            
+          </View>
         </View>
 
-        <View style={styles.amountCountainer}>
-          <Text style={styles.amountText}>{transaction.amountf}</Text>
+        <View style={ styles.amountCountainer }>
+          <Text style={ styles.amountText }> { transaction.coin } { amount } </Text>
         </View>
       </View>
     );
@@ -124,10 +134,10 @@ class TransactionsScreen extends Component {
     return (
       <LinearGradient
         style={{ flex: 1 }}
-        colors={['#11998e', '#38ef7d']}
+        colors={['#000000', '#323232']}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
-        locations={[0.1, 0.8]}
+        locations={[0.2, 0.8]}
       >
         <Header
           outerContainerStyles={{
@@ -145,18 +155,22 @@ class TransactionsScreen extends Component {
             },
           }}
         />
-        <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
           <View style = {styles.balanceContainer}>
             <Text style={styles.balanceText}> Balance: 55 BTC </Text>
           </View>
 
-          {isFinishedLoadingTransactions &&
-            <SectionList 
+          {isFinishedLoadingTransactions ? (
+            <SectionList
               renderItem={( {item} ) => this._renderTransaction({item})} 
-              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginLeft: 15 }}>{title}</Text>}              
+              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: '#ccbadc', fontSize: 20, marginLeft: 15, paddingTop: 10, borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)'}}>{title}</Text>}              
               sections={this.getSectionsData()} 
               keyExtractor={(item, index) => item + index} />
-            }
+          ) : (
+            <View style={{ marginTop: 36 }}>
+              <ActivityIndicator size="large" color="#FFF" />
+            </View>
+          )}
         </ScrollView>
       </LinearGradient>
     );
@@ -169,29 +183,26 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
   },
 
-  constainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   transactionContainer: {
     flexDirection: 'row',
     flex: 1,
-    padding: 5,
-    margin: 10,
+    paddingLeft: 5,
+    paddingTop: 10,
     borderRadius: 10,
+    borderBottomColor: 'rgba(217,56,239, 0.4)',
+    borderBottomWidth: 1,
   },
 
   balanceContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '90%',
+    width: '100%',
     height: 60, 
     backgroundColor: 'rgba(217,56,239, 0.1)',
     borderRadius: 10,
   },  
 
-  coinContainer: {
+  timeStampContainer: {
     flex: 1,
     justifyContent: 'flex-start'
   },
@@ -211,13 +222,20 @@ const styles = StyleSheet.create({
   amountText: {
     padding: 5,
     color: '#FFF',
-    fontSize: 12
+    fontSize: 16
   },
 
-  coinText: {
+  timeStampDateText: {
     padding: 5,
     color: '#FFF',
     fontSize: 16
+  },
+
+  timeStampTimeText: {
+    padding: 5,
+    color: 'grey',
+    fontSize: 16,
+    fontStyle: 'italic'
   }
 });
 

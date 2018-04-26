@@ -107,17 +107,18 @@ class PosScreen extends Component {
             }}
             backgroundColor="rgba(0,0,0,0)"
             leftComponent={
-              <Icon
-                color="#fff"
-                name="plus"
-                onPress={() => navigate('newProduct')}
-                type="material-community"
-              />
+              <TouchableOpacity onPress={() => navigate('newProduct')}>
+                <Icon
+                  color="#fff"
+                  name="plus"
+                  type="material-community"
+                />
+              </TouchableOpacity>
             }
             rightComponent={
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
-                onPress={() => navigate('cart')}
+                onPress={() => navigate('checkout')}
               >
                 <Icon
                   name="cart"

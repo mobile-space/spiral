@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   TouchableOpacity,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -10,18 +12,72 @@ import {
 import { Header, Icon } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
+import { LinearGradient } from 'expo';
+import Swipeout from 'react-native-swipeout';
 
 import CartItem from './common/CartItem';
+import CategoryButton from './common/CategoryButton';
+
+const ACCEPTED_CRYPTO_CURRENCIES = ['BTC', 'ETH', 'DASH', 'LTC'];
 
 class CartScreen extends Component {
   static navigationOptions = {
     headerMode: 'none',
   }
 
+  state = {
+    currencyConversion: null,
+    currency: 'BTC',
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true);
+  }
+
+  componentDidMount() {
+    if (Object.keys(this.props.cart).length > 0) {
+      fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,DASH,ETH,LTC&tsyms=BTC,USD')
+        .then(res => res.json())
+        .then((res) => {
+          /* eslint-disable react/no-did-mount-set-state */
+          this.setState({ currencyConversion: res });
+          /* eslint-enable react/no-did-mount-set-state */
+        });
+    }
+  }
+
+  componentWillUnmount() {
+    StatusBar.setBarStyle('light-content', true);
+  }
+
+  onCheckoutPressed = (amount, currency) => {
+    if (!amount || !currency) return;
+
+    const {
+      goToPayment,
+      navigation: { navigate },
+    } = this.props;
+
+    goToPayment({ amount, currency });
+    navigate('payment');
+  }
+
+  calculateTotal = cart => (
+    Object.keys(cart).reduce((accumulator, key) => {
+      const {
+        quantity,
+        price: { local_currency: unitPrice },
+      } = cart[key];
+  
+      const total = accumulator + (quantity * unitPrice);
+      return +(`${Math.round(`${total}e+2`)}e-2`);
+    }, 0)
+  );
+
   showClearCartAlert = () => {
     const {
-      navigation: { pop },
       clearCart,
+      screenProps: { dismiss },
     } = this.props;
 
     Alert.alert(
@@ -29,30 +85,51 @@ class CartScreen extends Component {
       'Are you sure you want to clear the cart? This cannot be undone.',
       [
         { text: 'No' },
-        { text: 'OK', onPress: () => { clearCart(); pop(); } },
+        { text: 'OK', onPress: () => { clearCart(); dismiss(); } },
       ],
       { cancelable: false },
     );
   }
 
   renderCartItem = (product) => {
-    const { addOneToCart, removeOneFromCart } = this.props;
+    const { addOneToCart, removeOneFromCart, removeFromCart } = this.props;
+    const swipeoutButtons = [
+      {
+        autoClose: true,
+        onPress: () => removeFromCart(product),
+        text: 'Delete',
+        type: 'delete',
+      },
+    ];
 
     return (
-      <CartItem
-        product={product}
-        onMinusPressed={() => removeOneFromCart(product)}
-        onPlusPressed={() => addOneToCart(product)}
-      />
+      <Swipeout
+        right={swipeoutButtons}
+        style={{ backgroundColor: 'rgba(0,0,0,0)' }}
+      >
+        <CartItem
+          product={product}
+          onMinusPressed={() => removeOneFromCart(product)}
+          onPlusPressed={() => addOneToCart(product)}
+        />
+      </Swipeout>
     );
   };
 
   render() {
     const {
-      navigation: { navigate, pop },
       cart,
+      screenProps: { dismiss },
     } = this.props;
-    
+
+    const { currencyConversion, currency } = this.state;
+
+    const totalInLocalCurrency = this.calculateTotal(cart);
+    const totalInCrypto =
+      currencyConversion && currencyConversion[currency] && currencyConversion[currency].USD ? (
+        totalInLocalCurrency / currencyConversion[currency].USD
+      ) : null;
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -62,7 +139,7 @@ class CartScreen extends Component {
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
           leftComponent={
-            <TouchableOpacity onPress={() => pop()}>
+            <TouchableOpacity onPress={() => dismiss()}>
               <Icon
                 color="#000"
                 name="close"
@@ -79,9 +156,11 @@ class CartScreen extends Component {
             },
           }}
           rightComponent={
-            <TouchableOpacity onPress={this.showClearCartAlert}>
-              <Text> Clear Cart</Text>
-            </TouchableOpacity>
+            Object.keys(this.props.cart).length > 0 ? (
+              <TouchableOpacity onPress={this.showClearCartAlert}>
+                <Text> Clear Cart</Text>
+              </TouchableOpacity>
+            ) : null
           }
         />
 
@@ -91,31 +170,69 @@ class CartScreen extends Component {
           renderItem={({ item }) => this.renderCartItem(item)}
         />
 
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalText}>Total: </Text>
-          <Text style={styles.totalAmount}>
-            {
-              Object.keys(cart).reduce((accumulator, key) => {
-                const {
-                  quantity,
-                  price: { local_currency: unitPrice },
-                } = cart[key];
-
-                const total = accumulator + (quantity * unitPrice);
-                return +(`${Math.round(`${total}e+2`)}e-2`);
-              }, 0)
-            }
-          </Text>
-          <Text style={styles.totalCurrency}>USD</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.checkoutButtonContainer}
-          onPress={() => navigate('payment')}
+        <LinearGradient
+          colors={['#000000', '#323232']}
+          start={{ x: 0.0, y: 0.0 }}
+          end={{ x: 1.0, y: 1.0 }}
+          locations={[0.2, 0.8]}
         >
-          <View style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>Checkout</Text>
+          {totalInLocalCurrency &&
+            <View style={styles.cryptoCurrenciesSelector}>
+              {ACCEPTED_CRYPTO_CURRENCIES.map(category => (
+                <CategoryButton
+                  key={category}
+                  style={styles.category}
+                  onPress={() => this.setState({ currency: category })}
+                  title={category}
+                  isSelected={category === this.state.currency}
+                />
+              ))}
+            </View>
+          }
+
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalText}>Total: </Text>
+            <Text style={styles.totalAmount}>{totalInLocalCurrency.toFixed(2)}</Text>
+            <Text style={styles.totalCurrency}>USD</Text>
+
+            {totalInCrypto !== null &&
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.totalSeparator}>/</Text>
+                <Text style={styles.totalAmount}>
+                  {
+                    totalInCrypto >= 1 ? (
+                      (totalInLocalCurrency / currencyConversion[currency].USD).toFixed(2)
+                    ) : (
+                      Number
+                        .parseFloat(totalInLocalCurrency / currencyConversion[currency].USD)
+                        .toPrecision(2)
+                    )
+                  }
+                </Text>
+                <Text style={styles.totalCurrency}>{currency}</Text>
+              </View>
+            }
           </View>
-        </TouchableOpacity>
+          
+          <TouchableOpacity
+            disabled={!totalInCrypto}
+            onPress={() => this.onCheckoutPressed(totalInCrypto, currency)}
+            style={styles.checkoutButtonContainer}
+          >
+            <View style={styles.checkoutButton}>
+              {
+                totalInLocalCurrency && !totalInCrypto ? (
+                  <ActivityIndicator
+                    size="small"
+                    color="#FFF"
+                  />
+                ) : (
+                  <Text style={styles.checkoutButtonText}>Checkout</Text>
+                )
+              }
+            </View>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     );
   }
@@ -123,13 +240,17 @@ class CartScreen extends Component {
 
 CartScreen.propTypes = {
   navigation: PropTypes.shape({
-    pop: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  screenProps: PropTypes.shape({
+    dismiss: PropTypes.func.isRequired,
   }).isRequired,
   cart: PropTypes.shape({}).isRequired,
   addOneToCart: PropTypes.func.isRequired,
   removeOneFromCart: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
   clearCart: PropTypes.func.isRequired,
+  goToPayment: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -137,8 +258,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  cryptoCurrenciesSelector: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginBottom: 16,
+  },
   totalContainer: {
-
     flexDirection: 'row',
     height: 24,
     marginBottom: 16,
@@ -151,22 +278,35 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 8,
     fontWeight: 'bold',
+    color: '#fff',
   },
   totalAmount: {
     fontSize: 18,
     fontStyle: 'italic',
     marginRight: 8,
+    color: '#fff',
   },
   totalCurrency: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff',
+  },
+  totalSeparator: {
+    color: '#fff',
+    fontSize: 18,
+    marginLeft: 4,
+    marginRight: 4,
   },
   checkoutButtonContainer: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#006600',
     borderRadius: 30,
     height: 60,
     margin: 16,
     marginBottom: 32,
+  },
+  category: {
+    marginLeft: 16,
+    marginRight: 32,
   },
   checkoutButton: {
     alignItems: 'center',
@@ -189,16 +329,21 @@ export default (() => {
   const {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
   } = require('../actions/cart_actions');
+  const {
+    goToPayment,
+  } = require('../actions/payment_actions');
   /* eslint-enable global-require  */
 
   const mapDispatchToProps = {
     addOneToCart,
     removeOneFromCart,
+    removeFromCart,
     clearCart,
+    goToPayment,
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(CartScreen);
 })();
-
