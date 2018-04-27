@@ -138,8 +138,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     height: 0.5 * height,
     width: 0.8 * width,
+    borderRadius: 10,
   },
   backgroundImageContainer: {
+    padding: 5,
     height: (0.5 * height) * 0.55,
   },
   closeButtonContainer: {

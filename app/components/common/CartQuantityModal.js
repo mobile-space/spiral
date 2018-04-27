@@ -38,12 +38,14 @@ class CartQuantityModal extends Component {
     const { quantity } = this.state;
 
     return (
+      <View style={styles.modalContainer}>
       <Modal
         animationType="fade"
         onRequestClose={() => onRequestClose()}
         transparent
         visible={visible}
       >
+
         <View style={styles.modal}>
           <View style={styles.container}>
             <View style={{ flex: 1 }}>
@@ -95,11 +97,17 @@ class CartQuantityModal extends Component {
           </View>
         </View>
       </Modal>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+
+  modalContainer: {
+    flex: 1,
+    borderRadius: 10,
+  },
   modal: {
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.35)',
@@ -111,6 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     height: 160,
     width: 0.8 * width,
+    borderRadius: 20,
   },
   productTopRow: {
     alignItems: 'center',
