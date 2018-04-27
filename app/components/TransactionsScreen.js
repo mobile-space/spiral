@@ -13,7 +13,7 @@ import {
   Alert
 } from 'react-native';
 
-import { LinearGradient } from 'expo';
+import { LinearGradient, Font } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 
 var complete = [];
@@ -27,13 +27,25 @@ class TransactionsScreen extends Component {
 
     this.state = {
       isFinishedLoadingTransactions: false,
+      isFontFinishedLoading: false,
       transactions: null,
     }
   }
   
   componentDidMount = async () => {
+    this.loadFont();
     this.fetchTransactions();
   }
+
+  loadFont = async () => {
+    await Font.loadAsync({
+     'libre-franklin-regular': require('../../assets/fonts/librefranklin-regular.ttf'),
+     'libre-franklin-bold': require('../../assets/fonts/librefranklin-bold.ttf'),
+     'libre-franklin-medium': require('../../assets/fonts/librefranklin-medium.ttf')
+   });
+
+   this.setState({isFontFinishedLoading: true});
+ }
 
   fetchTransactions = async () => {
 
@@ -116,6 +128,14 @@ class TransactionsScreen extends Component {
       </View>
     );
   }
+
+  _renderSectionHeader = ({title}) => {
+    return (
+      <View style={{borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)', paddingTop: 10,}}>
+        <Text style={{ fontWeight: 'bold', color: '#ccbadc', fontSize: 20, marginLeft: 10, padding: 5}}>{title}</Text>
+      </View>
+    )
+  }
   
   getSectionsData() {
     return (
@@ -128,7 +148,7 @@ class TransactionsScreen extends Component {
   }
 
   render() {
-    const { transactions, isFinishedLoadingTransactions } = this.state;
+    const { transactions, isFinishedLoadingTransactions, isFontFinishedLoading } = this.state;
 
     return (
       <LinearGradient
@@ -138,6 +158,7 @@ class TransactionsScreen extends Component {
         end={{ x: 1.0, y: 1.0 }}
         locations={[0.2, 0.8]}
       >
+      { isFontFinishedLoading &&
         <Header
           outerContainerStyles={{
             marginTop: 24,
@@ -154,15 +175,12 @@ class TransactionsScreen extends Component {
             },
           }}
         />
+        }
         <ScrollView contentContainerStyle={styles.container}>
-          <View style = {styles.balanceContainer}>
-            <Text style={styles.balanceText}> Balance: 55 BTC </Text>
-          </View>
-
-          {isFinishedLoadingTransactions ? (
+          {isFinishedLoadingTransactions && isFontFinishedLoading ? (
             <SectionList
               renderItem={( {item} ) => this._renderTransaction({item})} 
-              renderSectionHeader={({ section: { title } }) => <Text style={{ fontWeight: 'bold', color: '#ccbadc', fontSize: 20, marginLeft: 15, paddingTop: 10, borderBottomWidth: 3, borderBottomColor: 'rgba(217,56,239, 0.8)'}}>{title}</Text>}              
+              renderSectionHeader={({ section: { title } }) => this._renderSectionHeader({ title })}              
               sections={this.getSectionsData()} 
               keyExtractor={(item, index) => item + index} />
           ) : (
