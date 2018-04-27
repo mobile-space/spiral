@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions
 } from 'react-native';
 import {
   Header,
@@ -15,6 +16,7 @@ import {
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import NewCategoryModal from './common/NewCategoryModal';
+import { LinearGradient } from 'expo'
 
 class NewProductScreen extends Component {
   constructor(props) {
@@ -31,8 +33,11 @@ class NewProductScreen extends Component {
       isNewCategoryVisible: false,
       newCategory: '',
       price: null,
+      isFontFinishedLoading: false 
     };
   }
+
+
 
   componentWillMount() {
     StatusBar.setBarStyle('dark-content', true);
@@ -52,8 +57,13 @@ class NewProductScreen extends Component {
     const productId = Math.max(...ids) + 1;
 
     const {
-      name, selectedCategory, newCategory, price,
+      name, selectedCategory, newCategory,
     } = this.state;
+
+    var { price } = this.state;
+
+    //set price to a float
+    price = parseFloat(price);
 
     if (!selectedCategory && newCategory === '') return;
     const category = selectedCategory || newCategory;
@@ -89,7 +99,7 @@ class NewProductScreen extends Component {
           })}
           activeOpacity={1}
         >
-        <View style = {[styles.selectedCategory, (newCategory || selectedCategory) === category && { borderWidth: 2, borderBottomColor: '#000', borderRadius: 15}]}>
+        <View style = {[styles.selectedCategory, (newCategory || selectedCategory) === category && { borderWidth: 2, borderBottomColor: '#fff'}]}>
           <Text style={[
               styles.categoryText,
               (newCategory || selectedCategory) === category && { fontWeight: 'bold'},
@@ -109,7 +119,13 @@ class NewProductScreen extends Component {
     const { navigation: { goBack } } = this.props;
 
     return (
-      <View style={styles.container}>
+      <LinearGradient
+      style={{ flex: 1 }}
+      colors={['#000000', '#323232']}
+      start={{ x: 0.0, y: 0.0 }}
+      end={{ x: 1.0, y: 1.0 }}
+      locations={[0.2, 0.8]}
+      >
         {isNewCategoryVisible &&
           <NewCategoryModal
             category={newCategory}
@@ -126,13 +142,15 @@ class NewProductScreen extends Component {
         <Header
           outerContainerStyles={{
             marginTop: 24,
-            marginBottom: 24,
+            marginBottom: 30,
+            borderBottomWidth: 0
           }}
           backgroundColor="#rgba(0, 0, 0, 0)"
+          borderBottomWidth={0}
           leftComponent={
             <TouchableOpacity onPress={() => goBack()}>
               <Icon
-                color="#000"
+                color="#fff"
                 name="close"
                 type="material-community"
               />
@@ -141,7 +159,7 @@ class NewProductScreen extends Component {
           centerComponent={{
             text: 'New Item',
             style: {
-              color: '#000',
+              color: '#fff',
               fontSize: 24,
               fontWeight: 'bold',
             },
@@ -149,7 +167,7 @@ class NewProductScreen extends Component {
           rightComponent={
             <TouchableOpacity onPress={this.onSaveButtonPressed}>
               <Icon
-                color="#000"
+                color="#fff"
                 name="content-save"
                 type="material-community"
               />
@@ -158,17 +176,20 @@ class NewProductScreen extends Component {
         />
 
         <ScrollView>
+        <View style={styles.inputContainer}>
           <TextInput
-            style={styles.field}
+            style={styles.priceInput}
             placeholder="Name"
             value={name}
             onChangeText={text => this.setState({ name: text })}
             underlineColorAndroid="rgba(0,0,0,0)"
+            placeholderTextColor = "#fff"
           />
+          </View>
 
           <View style={styles.categoryRow}>
             <Icon
-              color="#000"
+              color="#fff"
               name="plus"
               onPress={() => this.setState({ isNewCategoryVisible: true })}
               type="material-community"
@@ -182,31 +203,43 @@ class NewProductScreen extends Component {
               {this.showCategories()}
             </ScrollView>
           </View>
-
+          
+          <View style={styles.inputContainer}>
           <TextInput
-            style={styles.field}
+            style={styles.priceInput}
             placeholder="Price in USD"
             value={`${price || ''}`}
-            onChangeText={text => this.setState({ price: parseFloat(text) })}
+            onChangeText={text => this.setState({ price: text })}
             underlineColorAndroid="rgba(0,0,0,0)"
+            placeholderTextColor = "#fff"
+            keyboardType='numeric'
           />
+          </View>
         </ScrollView>
-      </View>
+      </LinearGradient>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
     marginLeft: 16,
     marginRight: 16,
   },
-  field: {
-    borderBottomWidth: 1,
-    borderColor: '#CCC',
-    height: 40,
+  priceInput: {
+    borderWidth: 1,
+    borderColor: '#66ffcc',
+    height: 50,
     marginBottom: 16,
+    borderRadius: 10,
+    padding: 5,
+    color: '#fff',
+    fontSize: 18,
+  },
+  inputContainer: {
+    padding: 10,
   },
   categoryRow: {
     height: 40,
@@ -222,6 +255,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
+    color: '#fff',
   },
 
   selectedCategory: {

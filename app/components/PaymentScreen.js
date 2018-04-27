@@ -15,7 +15,7 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient, Font } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import { connect } from 'react-redux';
@@ -25,6 +25,7 @@ class PaymentScreen extends Component {
   static NavigationOptions = {
 
   }
+
   constructor(props) {
     super(props);
 
@@ -37,6 +38,7 @@ class PaymentScreen extends Component {
       progress: new Animated.Value(0),
       transactionStatus: null,
       timer: null,
+      isFontFinishedLoading: false,
     }
     this.checkTransactionStatus = this.checkTransactionStatus.bind(this);
 
@@ -47,7 +49,18 @@ class PaymentScreen extends Component {
     StatusBar.setBarStyle('light-content', true);
   }
 
+  loadFont = async () => {
+    await Font.loadAsync({
+     'libre-franklin-regular': require('../../assets/fonts/librefranklin-regular.ttf'),
+     'libre-franklin-bold': require('../../assets/fonts/librefranklin-bold.ttf'),
+     'libre-franklin-medium': require('../../assets/fonts/librefranklin-medium.ttf')
+   });
+
+   this.setState({isFontFinishedLoading: true});
+ }
+
   componentDidMount = async () => {
+    this.loadFont()
     await this.createTransaction();
 
     const timer = setInterval(this.showConfirmationDialog, 15000);
@@ -228,7 +241,7 @@ class PaymentScreen extends Component {
       payment: { amount, currency },
       navigation: { goBack },
     } = this.props 
-    const { transaction, isTransactionFinishedLoading, isTransactionPending } = this.state
+    const { transaction, isTransactionFinishedLoading, isTransactionPending, isFontFinishedLoading } = this.state
     const qrDimension = Dimensions.get( 'window' ).width * 0.5
 
     return (
@@ -239,6 +252,8 @@ class PaymentScreen extends Component {
         end={{ x: 1.0, y: 1.0 }}
         locations={[0.2, 0.8]}
       >
+      {isFontFinishedLoading &&
+      
       <Header
           outerContainerStyles = {{
             marginTop: 24,
@@ -260,10 +275,12 @@ class PaymentScreen extends Component {
             style: {
               color: '#FFF',
               fontSize: 24,
-              fontWeight: 'bold',
+              fontFamily: 'libre-franklin-bold'
             },
           }}
         />
+        }
+
         <SafeAreaView style = { styles.safeAreaView }>
         <ScrollView contentContainerStyle = { styles.container}>
         <View style = {{ paddingTop: 10}}>
@@ -319,10 +336,10 @@ class PaymentScreen extends Component {
           }
         </View>
         
+        {isFontFinishedLoading &&
         <TouchableOpacity
           style = { styles.goBackContainer }
           onPress= { () => {
-            // this.props.navigation.navigate('pos')
             this.props.screenProps.dismiss()
             
           } }
@@ -332,8 +349,9 @@ class PaymentScreen extends Component {
           </View>
 
         </TouchableOpacity>
+        }
         </ScrollView>
-        </SafeAreaView>
+        </SafeAreaView>      
       </LinearGradient>
 
     );
@@ -373,14 +391,14 @@ const styles = StyleSheet.create({
   amountLabelText: {
     color: '#fff', 
     fontSize: 12,
-    fontWeight: 'normal'
+    fontFamily: 'libre-franklin-regular',
   }, 
 
   amountTransactionText: {
     padding: 15,
     color: '#fff',
     fontSize: 14,
-    fontWeight: 'bold', 
+    fontFamily: 'libre-franklin-bold',
   },
 
   amountTransactionContainer: {
@@ -394,14 +412,14 @@ const styles = StyleSheet.create({
   addressLabelText: {
     color: '#fff', 
     fontSize: 12,
-    fontWeight: 'normal'
+    fontFamily: 'libre-franklin-regular'
   },
 
   addressTransactionText: {
     padding: 15,
     color: '#fff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'libre-franklin-bold',
   },
 
   addressTransactionContainer: {
@@ -435,7 +453,7 @@ const styles = StyleSheet.create({
   goBackButtonText: {
     color: '#FFF',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'libre-franklin-medium',
   },
 
   pendingTransaction: {

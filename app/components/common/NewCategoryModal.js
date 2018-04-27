@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     height: 160,
     padding: 16,
     width: 0.8 * width,
+    borderRadius: 10,
   },
   field: {
     borderBottomWidth: 1,

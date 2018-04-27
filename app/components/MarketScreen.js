@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { Header, ButtonGroup } from 'react-native-elements';
-import { LinearGradient } from 'expo';
+import { LinearGradient, Font } from 'expo';
 
 
 class MarketScreen extends Component {
@@ -24,14 +24,27 @@ class MarketScreen extends Component {
     this.state = {
       market: null,
       isFetchingMarket: true,
+      isFontFinishedLoading: false,
       error: null,
       active: 0,
       refreshing: false,
     }
   }
+  
 
   componentDidMount = async () => {
+    this.loadFont();
     this.fetchMarket();
+  }
+
+  loadFont = async () => {
+     await Font.loadAsync({
+      'libre-franklin-regular': require('../../assets/fonts/librefranklin-regular.ttf'),
+      'libre-franklin-bold': require('../../assets/fonts/librefranklin-bold.ttf'),
+      'libre-franklin-medium': require('../../assets/fonts/librefranklin-medium.ttf')
+    });
+
+    this.setState({isFontFinishedLoading: true});
   }
 
   async fetchMarket() {
@@ -80,7 +93,7 @@ class MarketScreen extends Component {
             <Text style = {{fontSize: 17, color: 'white', }}> {this.state.active == 0 ? '₿': '$'} </Text>
           </View>
           <View style={styles.priceBox}>
-            <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontWeight: 'bold'}}> 
+            <Text style={{ fontSize: 18, color: 'white', marginLeft: 0, fontFamily: 'libre-franklin-bold' }}> 
               {amount}
             </Text>
           </View>
@@ -113,11 +126,11 @@ class MarketScreen extends Component {
       <ButtonGroup
             buttons = {currencyChoice}
             containerStyle = {styles.buttonStyle}
-            textStyle = {{color: 'white'}}
+            textStyle = {{color: 'white', fontFamily: 'libre-franklin-regular'}}
             selectedIndex = {active}
             onPress = {this.updateIndex}
             selectedButtonStyle = {{backgroundColor: '#006600'}}
-            selectedTextStyle = {{color: 'white'}}
+            selectedTextStyle = {{color: 'white', fontFamily: 'libre-franklin-bold' }}
           />
     )
   }
@@ -141,7 +154,7 @@ class MarketScreen extends Component {
 }
 
   render() {
-    const { isFetchingMarket, market, active, refreshing  } = this.state
+    const { isFetchingMarket, market, active, refreshing, isFontFinishedLoading  } = this.state
     
     return (
       <LinearGradient
@@ -151,23 +164,28 @@ class MarketScreen extends Component {
       end={{ x: 1.0, y: 1.0 }}
       locations={[0.2, 0.8]}
       >
-      <Header
-          outerContainerStyles={{
-            marginTop: 24,
-            marginBottom: 16,
-            borderBottomWidth: 0,
-          }}
+      { isFontFinishedLoading &&
+      <View>
+        <Header
+            outerContainerStyles={{
+              marginTop: 24,
+              marginBottom: 16,
+              borderBottomWidth: 0,
+            }}
 
-          leftComponent={this.renderLeftMarketHeader()}
-          backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
-          rightComponent={this.renderMarketToggle()
-          }
-        />
-          { isFetchingMarket ? (
-            <View style={{ marginTop: 36 }}>
-              <ActivityIndicator size="large" color="#FFF" />
-            </View>
-          ) : this.contentView() }
+            leftComponent={this.renderLeftMarketHeader()}
+            backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
+            rightComponent={this.renderMarketToggle()
+            }
+          />
+        </View>
+      }
+            { isFetchingMarket && isFontFinishedLoading ? (
+              <View style={{ marginTop: 36 }}>
+                <ActivityIndicator size="large" color="#FFF" />
+              </View>
+            ) : this.contentView() }
+        
       </LinearGradient>
     );
   }
@@ -222,14 +240,15 @@ const styles = StyleSheet.create({
   coinNameText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'normal'
+    fontWeight: 'normal',
+    fontFamily: 'libre-franklin-medium'
   },
   
   headerText: {
     color: "#66ffcc",
     fontSize: 24,
-    fontWeight: 'bold'
-
+    fontWeight: 'bold',
+    fontFamily: 'libre-franklin-bold',
   },
 });
 
