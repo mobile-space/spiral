@@ -63,12 +63,23 @@ class PaymentScreen extends Component {
 
   showConfirmationDialog = () => {
     clearInterval(this.state.timer);
-    
+
+    const {
+      clearCart,
+      screenProps: { dismiss },
+    } = this.props;
+
     Alert.alert(
       'Transaction Confirmed',
       'Transaction ID: f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16',
       [
-        { text: 'OK', onPress: () => {} },
+        {
+          text: 'OK',
+          onPress: () => {
+            clearCart();
+            dismiss();
+          },
+        },
       ],
       { cancelable: false },
     );
@@ -457,5 +468,15 @@ export default (() => {
     payment: state.payment,
   });
 
-  return connect(mapStateToProps)(PaymentScreen);
+  /* eslint-disable global-require  */
+  const {
+    clearCart,
+  } = require('../actions/cart_actions');
+  /* eslint-enable global-require  */
+
+  const mapDispatchToProps = {
+    clearCart,
+  };
+
+  return connect(mapStateToProps, mapDispatchToProps)(PaymentScreen);
 })();

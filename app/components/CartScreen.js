@@ -85,7 +85,7 @@ class CartScreen extends Component {
       'Are you sure you want to clear the cart? This cannot be undone.',
       [
         { text: 'No' },
-        { text: 'OK', onPress: () => { clearCart(); dismiss(); } },
+        { text: 'Yes', onPress: () => { clearCart(); dismiss(); } },
       ],
       { cancelable: false },
     );
