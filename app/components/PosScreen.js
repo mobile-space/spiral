@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { Icon, Header, Badge } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
@@ -115,6 +115,17 @@ class PosScreen extends Component {
                 />
               </TouchableOpacity>
             }
+
+            centerComponent = {
+              <Image
+                source={require('../../assets/icon.png')}
+                style={{
+                  height: 60,
+                  width: 60,
+                }}
+              />
+            }
+
             rightComponent={
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
