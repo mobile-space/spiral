@@ -42,10 +42,18 @@ class CartItem extends Component {
           <View style={styles.productContainer}>
             <View style={styles.product}>
               <View style={{ marginRight: 8 }}>
-                <Image
-                  style={styles.productImage}
-                  source={{ uri: image }}
-                />
+                {image ? (
+                  <Image
+                    style={styles.productImage}
+                    source={{ uri: image }}
+                  />
+                ) : (
+                  <View style={styles.productImagePlaceholder}>
+                    <Text>
+                      {name.match(/\b(\w)/g).join('').toUpperCase()}
+                    </Text>
+                  </View>
+                )}
               </View>
   
               <View style={styles.productInfo}>
@@ -76,7 +84,7 @@ class CartItem extends Component {
 CartItem.propTypes = {
   product: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
     quantity: PropTypes.number.isRequired,
   }).isRequired,
   onMinusPressed: PropTypes.func.isRequired,
@@ -110,6 +118,15 @@ const styles = StyleSheet.create({
   productImage: {
     borderRadius: 8,
     height: 64,
+    width: 64,
+  },
+  productImagePlaceholder: {
+    alignItems: 'center',
+    borderColor: '#BBB',
+    borderRadius: 8,
+    borderWidth: 1,
+    height: 64,
+    justifyContent: 'center',
     width: 64,
   },
   productInfo: {

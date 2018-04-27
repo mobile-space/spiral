@@ -37,6 +37,7 @@ class PaymentScreen extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.interval);
+    clearInterval(this.state.timer);
   }
 
   showConfirmationDialog = () => {
