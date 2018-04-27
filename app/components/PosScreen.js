@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, StyleSheet, View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { Icon, Header, Badge } from 'react-native-elements';
 import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';

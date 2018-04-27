@@ -31,7 +31,6 @@ class TransactionsScreen extends Component {
     }
   }
   
-
   componentDidMount = async () => {
     this.fetchTransactions();
   }
