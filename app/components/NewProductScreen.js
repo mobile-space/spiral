@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -31,6 +32,14 @@ class NewProductScreen extends Component {
       newCategory: '',
       price: null,
     };
+  }
+
+  componentWillMount() {
+    StatusBar.setBarStyle('dark-content', true);
+  }
+
+  componentWillUnmount() {
+    StatusBar.setBarStyle('light-content', true);
   }
 
   onSaveButtonPressed = () => {

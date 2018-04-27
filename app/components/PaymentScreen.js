@@ -1,5 +1,20 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, SafeAreaView, StyleSheet, NativeModules, Platform, TouchableOpacity, Dimensions, Image, Animated, Easing, ScrollView } from 'react-native';
+import {
+  Alert,
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  NativeModules,
+  Platform,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+  Animated,
+  Easing,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import { LinearGradient } from 'expo';
 import { Header, Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
@@ -28,6 +43,10 @@ class PaymentScreen extends Component {
     this.progress = new Animated.Value(0);
   }
 
+  componentWillMount() {
+    StatusBar.setBarStyle('light-content', true);
+  }
+
   componentDidMount = async () => {
     await this.createTransaction();
 
@@ -38,6 +57,8 @@ class PaymentScreen extends Component {
   componentWillUnmount() {
     clearInterval(this.state.interval);
     clearInterval(this.state.timer);
+
+    StatusBar.setBarStyle('dark-content', true);
   }
 
   showConfirmationDialog = () => {
