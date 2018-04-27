@@ -158,7 +158,11 @@ class CartScreen extends Component {
           rightComponent={
             Object.keys(this.props.cart).length > 0 ? (
               <TouchableOpacity onPress={this.showClearCartAlert}>
-                <Text> Clear Cart</Text>
+                <Icon
+                  color="#000"
+                  name="cart-off"
+                  type="material-community"
+                />
               </TouchableOpacity>
             ) : null
           }
