@@ -59,7 +59,7 @@ class ItemQuantityModal extends Component {
             <View style={styles.backgroundImageContainer}>
               <Image
                 style={{ flex: 1, resizeMode: 'cover' }}
-                source={{ uri: image }}
+                source={{ uri: image || 'http://www.wusthof.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/placeholder/default/wusthof-imagenotfound.jpg' }}
               />
   
               <View style={styles.closeButtonContainer}>
@@ -129,7 +129,7 @@ class ItemQuantityModal extends Component {
 const styles = StyleSheet.create({
   modal: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.60)',
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -154,12 +154,12 @@ const styles = StyleSheet.create({
     width: 30,
   },
   productPriceContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     bottom: 16,
     position: 'absolute',
     right: 16,
   },
   productPrice: {
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     borderColor: 'rgba(255, 255, 255, 0.75)',
     borderWidth: 1,
     color: '#FFF',

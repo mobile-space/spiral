@@ -199,7 +199,7 @@ class CartScreen extends Component {
             <Text style={styles.totalAmount}>{totalInLocalCurrency.toFixed(2)}</Text>
             <Text style={styles.totalCurrency}>USD</Text>
 
-            {totalInCrypto !== null &&
+            {totalInCrypto &&
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.totalSeparator}>/</Text>
                 <Text style={styles.totalAmount}>
