@@ -73,13 +73,13 @@ ItemCard.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: '#006600',
+    borderColor: '#3d997a',
     borderWidth: 1,
     // borderRadius: 10,
   },
   row: {
     alignItems: 'center',
-    backgroundColor: '#006600',
+    backgroundColor: '#3d997a',
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center',
