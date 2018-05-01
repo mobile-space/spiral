@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://github.com/mobile-space/crypto-pos">
-<img alt="layovr" src="assets/app_icon.png" width="250">
+<img alt="layovr" src="assets/icon.png" width="250">
 </a>
 </p>
 
