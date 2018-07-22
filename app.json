@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "crypto-pos",
-    "description": "This project is really great.",
+    "name": "Spiral",
+    "description":
+      "Spiral is a Crypto Point of Sale application; Payments are done using Cryptocurrency",
     "slug": "crypto-pos",
     "privacy": "public",
     "sdkVersion": "26.0.0",
@@ -17,9 +18,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     }
