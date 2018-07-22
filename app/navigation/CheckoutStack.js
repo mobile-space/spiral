@@ -1,12 +1,13 @@
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator } from "react-navigation";
 
-import PaymentScreen from '../components/PaymentScreen';
-import CartScreen from '../components/CartScreen';
-import PosStack from './PosStack';
+import PaymentScreen from "../components/PaymentScreen";
+import CartScreen from "../components/CartScreen";
+import PosStack from "./PosStack";
 
-export default StackNavigator({
-
-},{
-  initialRouteName: 'cart',
-  headerMode: 'none'
-})
+export default StackNavigator(
+  {},
+  {
+    initialRouteName: "cart",
+    headerMode: "none"
+  }
+);

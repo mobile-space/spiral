@@ -3,8 +3,8 @@ import {
   REMOVE_ONE_FROM_CART,
   ADD_TO_CART,
   REMOVE_FROM_CART,
-  CLEAR_CART,
-} from '../actions/types';
+  CLEAR_CART
+} from "../actions/types";
 
 const INITIAL_STATE = {};
 
@@ -17,15 +17,15 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           [productId]: Object.assign(state[productId], {
-            quantity: state[productId].quantity + 1,
-          }),
+            quantity: state[productId].quantity + 1
+          })
         };
       }
 
       // New item to cart
       return {
         ...state,
-        [productId]: Object.assign(action.payload, { quantity: 1 }),
+        [productId]: Object.assign(action.payload, { quantity: 1 })
       };
     }
 
@@ -44,8 +44,8 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           [productId]: Object.assign(state[productId], {
-            quantity: state[productId].quantity - 1,
-          }),
+            quantity: state[productId].quantity - 1
+          })
         };
       }
 
@@ -56,23 +56,25 @@ export default (state = INITIAL_STATE, action) => {
       const {
         product,
         product: { productId },
-        quantity,
+        quantity
       } = action.payload;
 
-      const originalQuantity = (state[productId] && state[productId].quantity) ?
-        state[productId].quantity : 0;
+      const originalQuantity =
+        state[productId] && state[productId].quantity
+          ? state[productId].quantity
+          : 0;
 
       return {
         ...state,
         [productId]: Object.assign(state[productId] || product, {
-          quantity: originalQuantity + quantity,
-        }),
+          quantity: originalQuantity + quantity
+        })
       };
     }
 
     case REMOVE_FROM_CART: {
       const { productId } = action.payload;
-      
+
       const clone = Object.assign({}, state);
       delete clone[productId];
       return clone;

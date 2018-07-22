@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Dimensions,
   Modal,
@@ -6,33 +6,31 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-} from 'react-native';
-import PropTypes from 'prop-types';
+  View
+} from "react-native";
+import PropTypes from "prop-types";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 class NewCategoryModal extends Component {
   static propTypes = {
     category: PropTypes.string.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired
   };
 
   constructor(props) {
     super(props);
-  
+
     const { category } = this.props;
     this.state = {
-      category,
+      category
     };
   }
 
   render() {
-    const {
-      onRequestClose, visible,
-    } = this.props;
-  
+    const { onRequestClose, visible } = this.props;
+
     const { category } = this.state;
 
     return (
@@ -58,7 +56,7 @@ class NewCategoryModal extends Component {
                 onPress={() => onRequestClose(category)}
               >
                 <Text style={styles.closeButtonText}>
-                  {category ? 'Save' : 'Close'}
+                  {category ? "Save" : "Close"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -71,39 +69,39 @@ class NewCategoryModal extends Component {
 
 const styles = StyleSheet.create({
   modal: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.35)",
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center"
   },
   container: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     height: 160,
     padding: 16,
     width: 0.8 * width,
-    borderRadius: 10,
+    borderRadius: 10
   },
   field: {
     borderBottomWidth: 1,
-    borderColor: '#CCC',
+    borderColor: "#CCC",
     height: 40,
-    marginBottom: 16,
+    marginBottom: 16
   },
   closeButton: {
-    alignContent: 'center',
-    backgroundColor: '#007AFF',
+    alignContent: "center",
+    backgroundColor: "#007AFF",
     borderRadius: 24,
     height: 48,
     margin: 16,
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   closeButtonText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+    fontWeight: "bold",
+    textAlign: "center"
+  }
 });
 
 export default NewCategoryModal;

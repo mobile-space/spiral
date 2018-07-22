@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   NativeModules,
   Platform,
   SafeAreaView,
   StyleSheet,
-  Text,
-} from 'react-native';
+  Text
+} from "react-native";
 
 class SettingsScreen extends Component {
   render() {
@@ -20,8 +20,9 @@ class SettingsScreen extends Component {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
-  },
+    paddingTop:
+      Platform.OS === "ios" ? 0 : NativeModules.StatusBarManager.HEIGHT
+  }
 });
 
 export default SettingsScreen;

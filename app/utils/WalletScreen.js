@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Dimensions,
   NativeModules,
@@ -6,18 +6,18 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
-} from 'react-native';
-import { LinearGradient } from 'expo';
-import QRCode from 'react-native-qrcode-svg';
+  View
+} from "react-native";
+import { LinearGradient } from "expo";
+import QRCode from "react-native-qrcode-svg";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const size = Math.min(width, height) * 0.9;
 
 const WalletScreen = () => (
   <LinearGradient
     style={{ flex: 1 }}
-    colors={['#000000', '#323232']}
+    colors={["#000000", "#323232"]}
     start={{ x: 0.0, y: 0.0 }}
     end={{ x: 1.0, y: 1.0 }}
     locations={[0.2, 0.8]}
@@ -43,25 +43,26 @@ const WalletScreen = () => (
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 0 : NativeModules.StatusBarManager.HEIGHT,
+    paddingTop:
+      Platform.OS === "ios" ? 0 : NativeModules.StatusBarManager.HEIGHT
   },
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   hint: {
-    color: '#66ffcc',
+    color: "#66ffcc",
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontWeight: "bold",
+    marginBottom: 16
   },
   address: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 12,
-    fontStyle: 'italic',
-    marginTop: 16,
-  },
+    fontStyle: "italic",
+    marginTop: 16
+  }
 });
 
 export default WalletScreen;
