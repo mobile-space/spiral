@@ -36,6 +36,8 @@ Payments are done using cryptocurreny
 - Scan the QR Code to submit transaction
 - User can check **Transactions**(**_complete,incomplete, and pending_**)
 
+### [Demo - Try it on Expo](https://exp.host/@mitulsavani/spiral)
+
 ### API's
 
 - [CryptoCompare](https://www.cryptocompare.com/)

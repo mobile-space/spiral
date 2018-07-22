@@ -3,7 +3,7 @@
     "name": "Spiral",
     "description":
       "Spiral is a Crypto Point of Sale application; Payments are done using Cryptocurrency",
-    "slug": "crypto-pos",
+    "slug": "spiral",
     "privacy": "public",
     "sdkVersion": "26.0.0",
     "platforms": ["ios", "android"],
