@@ -1,5 +1,6 @@
 import React from "react";
 import { AsyncStorage } from "react-native";
+import { createAppContainer } from 'react-navigation';
 import { Provider, connect } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
@@ -9,8 +10,10 @@ import { PersistGate } from "redux-persist/integration/react";
 import reducers from "./app/reducers";
 import TabNavigator from "./app/navigation/TabNavigator";
 
+const AppContainer = createAppContainer(TabNavigator);
+
 export const ConnectedRootComponent = (() => {
-  const RootComponent = () => <TabNavigator />;
+  const RootComponent = () => <AppContainer />;
 
   const mapStateToProps = state => ({
     products: state.products

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
+  NativeModules,
   Platform,
-  NativeModules
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { ButtonGroup, Input } from "react-native-elements";
 

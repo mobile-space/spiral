@@ -1,4 +1,4 @@
-import { StackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 
 import PosScreen from "../components/PosScreen";
 import NewProductScreen from "../components/NewProductScreen";
@@ -7,37 +7,33 @@ import PaymentScreen from "../components/PaymentScreen";
 import CartScreen from "../components/CartScreen";
 import DismissableStackNavigator from "./DismissableStackNavigator";
 
-const checkoutModal = DismissableStackNavigator(
-  {
-    cart: {
-      screen: CartScreen,
-      navigationOptions: { tabBarVisible: false }
-    },
-    payment: {
-      screen: PaymentScreen,
-      navigationOptions: { tabBarVisible: false }
-    }
+const checkoutModal = DismissableStackNavigator({
+  cart: {
+    screen: CartScreen,
+    navigationOptions: { tabBarVisible: false }
   },
-  {
-    headerMode: "none"
+  payment: {
+    screen: PaymentScreen,
+    navigationOptions: { tabBarVisible: false }
   }
-);
+},
+{
+  headerMode: "none"
+});
 
-export default StackNavigator(
-  {
-    pos: {
-      screen: PosScreen
-    },
-    newProduct: {
-      screen: NewProductScreen,
-      navigationOptions: { tabBarVisible: false }
-    },
-    checkout: {
-      screen: checkoutModal
-    }
+export default createStackNavigator({
+  pos: {
+    screen: PosScreen
   },
-  {
-    headerMode: "none",
-    mode: "modal"
+  newProduct: {
+    screen: NewProductScreen,
+    navigationOptions: { tabBarVisible: false }
+  },
+  checkout: {
+    screen: checkoutModal
   }
-);
+},
+{
+  headerMode: "none",
+  mode: "modal"
+});

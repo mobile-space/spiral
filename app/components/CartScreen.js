@@ -181,7 +181,7 @@ class CartScreen extends Component {
           end={{ x: 1.0, y: 1.0 }}
           locations={[0.2, 0.8]}
         >
-          {totalInLocalCurrency && (
+          {!!totalInLocalCurrency && (
             <View style={styles.cryptoCurrenciesSelector}>
               {ACCEPTED_CRYPTO_CURRENCIES.map(category => (
                 <CategoryButton
@@ -202,7 +202,7 @@ class CartScreen extends Component {
             </Text>
             <Text style={styles.totalCurrency}>USD</Text>
 
-            {totalInCrypto && (
+            {!!totalInCrypto && (
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.totalSeparator}>/</Text>
                 <Text style={styles.totalAmount}>
@@ -225,7 +225,7 @@ class CartScreen extends Component {
             style={styles.checkoutButtonContainer}
           >
             <View style={styles.checkoutButton}>
-              {totalInLocalCurrency && !totalInCrypto ? (
+              {!!totalInLocalCurrency && !totalInCrypto ? (
                 <ActivityIndicator size="small" color="#FFF" />
               ) : (
                 <Text style={styles.checkoutButtonText}>Checkout</Text>

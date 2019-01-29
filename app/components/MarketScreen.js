@@ -1,15 +1,10 @@
 import React, { Component } from "react";
 import {
-  NativeModules,
-  Platform,
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ScrollView,
   ActivityIndicator,
-  RefreshControl
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 import { Header, ButtonGroup } from "react-native-elements";

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import {
+  Image,
   ScrollView,
   StyleSheet,
-  View,
   TouchableOpacity,
-  Image,
-  Dimensions
+  View,
 } from "react-native";
 import { Icon, Header, Badge } from "react-native-elements";
 import { PropTypes } from "prop-types";
@@ -218,7 +217,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap"
   },
   badge: {
-    backgroundColor: "#ef384e",
     padding: 5,
     left: 2,
     top: 1

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { StackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 
 export default function DismissableStackNavigator(routes, options) {
-  const StackNav = StackNavigator(routes, options);
+  const StackNav = createStackNavigator(routes, options);
 
   return class DismissableStackNav extends Component {
     static router = StackNav.router;

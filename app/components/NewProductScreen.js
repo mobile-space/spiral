@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Dimensions
 } from "react-native";
 import { Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
@@ -50,7 +49,7 @@ class NewProductScreen extends Component {
       addProduct
     } = this.props;
     const ids = Object.keys(products).map(key => products[key].productId);
-    const productId = Math.max(...ids) + 1;
+    const productId = ids.length === 0 ? 1 : Math.max(...ids) + 1;
 
     const { name, selectedCategory, newCategory } = this.state;
 
@@ -256,7 +255,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff"
   },
-
   selectedCategory: {
     padding: 10,
     alignItems: "center",

@@ -3,18 +3,15 @@ import {
   ActivityIndicator,
   NativeModules,
   Platform,
-  SafeAreaView,
+  ScrollView,
+  SectionList,
   StyleSheet,
   Text,
-  ScrollView,
-  FlatList,
   View,
-  SectionList,
-  Alert
 } from "react-native";
 
 import { LinearGradient, Font } from "expo";
-import { Header, Icon } from "react-native-elements";
+import { Header } from "react-native-elements";
 
 var complete = [];
 var incomplete = [];

@@ -4,7 +4,7 @@ import {
   Platform,
   SafeAreaView,
   StyleSheet,
-  Text
+  Text,
 } from "react-native";
 
 class SettingsScreen extends Component {

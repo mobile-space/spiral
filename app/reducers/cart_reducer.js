@@ -11,6 +11,7 @@ const INITIAL_STATE = {};
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ADD_ONE_TO_CART: {
+      console.log(action.payload);
       const { productId } = action.payload;
       if (state[productId]) {
         // Increase quantity by 1
@@ -30,8 +31,9 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case REMOVE_ONE_FROM_CART: {
+      console.log(state);
       const { productId } = action.payload;
-
+      
       if (state[productId]) {
         if (state[productId].quantity === 1) {
           // Remove last item to cart
@@ -53,6 +55,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case ADD_TO_CART: {
+      console.log(state);
       const {
         product,
         product: { productId },
@@ -73,6 +76,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case REMOVE_FROM_CART: {
+      console.log(state);
       const { productId } = action.payload;
 
       const clone = Object.assign({}, state);

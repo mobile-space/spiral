@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { PropTypes } from "prop-types";
 
 import CartQuantityModal from "./CartQuantityModal";

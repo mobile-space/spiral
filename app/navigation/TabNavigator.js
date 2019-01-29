@@ -1,8 +1,8 @@
 import React from "react";
 import { Platform } from "react-native";
-import { TabNavigator } from "react-navigation";
-import PropTypes from "prop-types";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "react-navigation";
+import PropTypes from "prop-types";
 
 import PosStack from "./PosStack";
 import MarketScreen from "../components/MarketScreen";
@@ -55,7 +55,7 @@ WalletTabIcon.propTypes = {
   tintColor: PropTypes.string.isRequired
 };
 
-export default TabNavigator(
+export default createBottomTabNavigator(
   {
     pos: {
       screen: PosStack,

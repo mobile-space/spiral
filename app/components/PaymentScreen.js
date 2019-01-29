@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import {
   Alert,
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
+  Animated,
+  Dimensions,
+  Easing,
+  Image,
   NativeModules,
   Platform,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  Animated,
-  Easing,
+  SafeAreaView,
   ScrollView,
-  StatusBar
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { LinearGradient, Font } from "expo";
 import { Header, Icon } from "react-native-elements";

@@ -5,7 +5,7 @@
       "Spiral is a Crypto Point of Sale application; Payments are done using Cryptocurrency",
     "slug": "spiral",
     "privacy": "public",
-    "sdkVersion": "26.0.0",
+    "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
