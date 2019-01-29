@@ -120,10 +120,6 @@ class MarketScreen extends Component {
     this.fetchMarket();
   };
 
-  renderLeftMarketHeader = () => {
-    return <Text style={styles.headerText}> Market </Text>;
-  };
-
   renderMarketToggle = () => {
     const { isFetchingMarket, market, active } = this.state;
     const currencyChoice = ["BitCoin", "USD"];
@@ -186,7 +182,6 @@ class MarketScreen extends Component {
                 marginBottom: 16,
                 borderBottomWidth: 0
               }}
-              leftComponent={this.renderLeftMarketHeader()}
               backgroundColor="rgba(0.0, 0.0, 0.0, 0.0)"
               rightComponent={this.renderMarketToggle()}
             />
@@ -256,13 +251,6 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontFamily: "libre-franklin-medium"
   },
-
-  headerText: {
-    color: "#66ffcc",
-    fontSize: 24,
-    fontWeight: "bold",
-    fontFamily: "libre-franklin-bold"
-  }
 });
 
 export default MarketScreen;

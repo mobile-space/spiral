@@ -244,7 +244,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginBottom: 16,
-    marginTop: 8
+    marginTop: 8,
+    marginLeft: 24,
   },
   category: {
     alignItems: "center",
