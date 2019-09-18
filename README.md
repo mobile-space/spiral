@@ -62,18 +62,14 @@ exp ios (iOS version)
 exp android (Android version)
 ```
 
-## Wireframes
+## Screens
 
-<div style={{display: flex; flex-direction: row}}>
-  <img src="https://github.com/mobile-space/spiral/blob/master/wireframes/POS_Screen.jpg" width="270" />
-  <img src="https://github.com/mobile-space/spiral/blob/master/wireframes/Cart_Screen.jpg" width="270" />
-  <img src="https://github.com/mobile-space/spiral/blob/master/wireframes/Market_Screen.jpg" width="270" />
-</div>
 
-<div style={{display: flex; flex-direction: row}}>
-  <img src="https://github.com/mobile-space/spiral/blob/master/wireframes/Payment_Confirmation_Screen.jpg" width="270" />
-  <img src="https://github.com/mobile-space/spiral/blob/master/wireframes/Payment_Screen.jpg" width="270" />
-</div>
+|                                                         |                                                         |                                                         |
+| :-----------------------------------------------------: | :-----------------------------------------------------: | :-----------------------------------------------------: |
+| <img width="250" src="./assets/screenshots/1.png"> | <img width="250" src="./assets/screenshots/2.png"> | <img width="250" src="./assets/screenshots/3.png"> |
+| <img width="250" src="./assets/screenshots/4.png"> | <img width="250" src="./assets/screenshots/5.png"> | <img width="250" src="./assets/screenshots/6.png"> |
+| <img width="250" src="./assets/screenshots/7.png"> |  |  |
 
 ## Feedback
 
